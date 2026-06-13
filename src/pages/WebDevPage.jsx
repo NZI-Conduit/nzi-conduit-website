@@ -85,11 +85,10 @@ export default function WebDevPage({ onNavigate }) {
                   Every millisecond counts. We build for speed, ensuring your portfolio or store loads instantly on any device, anywhere.
                 </p>
               </div>
-              <div className="absolute right-0 bottom-0 w-1/3 opacity-10 group-hover:opacity-20 transition-opacity">
+              <div className="absolute right-0 bottom-0 translate-x-8 translate-y-8 pointer-events-none opacity-15 group-hover:opacity-30 transition-opacity">
                 <span
-                  className="material-symbols-outlined text-[180px] md:text-[250px] xl:text-[320px]"
+                  className="material-symbols-outlined text-[220px] md:text-[300px] xl:text-[380px]"
                   style={{ fontVariationSettings: "'FILL' 1" }}>
-                  
                   speed
                 </span>
               </div>
