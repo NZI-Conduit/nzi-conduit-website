@@ -21,6 +21,10 @@ dist-ssr/
 .AppleDouble
 .LSOverride
 
+# Local AI tool context
+.impeccable/
+.antigravity/
+
 # IDEs and editors
 .idea/
 .vscode/
