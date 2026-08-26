@@ -95,7 +95,8 @@ export default function ServicesPage({ onNavigate, onRequestAudit }) {
         description="NZI Conduit provides direct engineer-backed web development, search engine strategy, and cybersecurity auditing structured specifically for underserved creators and growing businesses."
         onRequestAudit={onRequestAudit}
         onNavigate={onNavigate}
-        secondaryCtaText={null}
+        secondaryCtaText="View Fixed Pricing & Packages"
+        onSecondaryCta={() => onNavigate("pricing")}
         metrics={heroMetrics}
       />
 

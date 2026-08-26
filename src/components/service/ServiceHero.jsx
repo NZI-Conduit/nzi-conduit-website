@@ -9,6 +9,7 @@ export function ServiceHero({
   onRequestAudit,
   onNavigate,
   secondaryCtaText = "Explore Capabilities",
+  onSecondaryCta,
   metrics = [],
 }) {
   return (
@@ -32,7 +33,12 @@ export function ServiceHero({
             Request Free Audit
           </Button>
           {secondaryCtaText && (
-            <Button size="lg" variant="outline" onClick={() => onNavigate("services")} icon="arrow_forward">
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={onSecondaryCta || (() => onNavigate("services"))}
+              icon="arrow_forward"
+            >
               {secondaryCtaText}
             </Button>
           )}

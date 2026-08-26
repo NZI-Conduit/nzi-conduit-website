@@ -214,6 +214,14 @@ export default function Footer({ onNavigate, onRequestAudit }) {
               </li>
               <li>
                 <button
+                  onClick={() => onNavigate("pricing")}
+                  className="hover:text-white hover:translate-x-1 transition-all duration-200 cursor-pointer text-left inline-block text-amber-400 font-semibold"
+                >
+                  Pricing & Packages
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={onRequestAudit}
                   className="group hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1 text-blue-400"
                 >

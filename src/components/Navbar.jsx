@@ -189,6 +189,18 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
 
             <button
               type="button"
+              onClick={() => handleNavigate("pricing")}
+              className={`px-4 py-2 text-sm font-label rounded-full transition-all duration-200 cursor-pointer ${
+                activePage === "pricing"
+                  ? "bg-white text-primary shadow-sm font-bold"
+                  : "text-on-surface-variant hover:text-primary hover:bg-surface-variant/40"
+              }`}
+            >
+              Pricing
+            </button>
+
+            <button
+              type="button"
               onClick={() => handleNavigate("about")}
               className={`px-4 py-2 text-sm font-label rounded-full transition-all duration-200 cursor-pointer ${
                 activePage === "about"
@@ -328,6 +340,17 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
               </div>
             )}
           </div>
+
+          <button
+            onClick={() => handleNavigate("pricing")}
+            className={`w-full text-left px-4 py-3 rounded-xl font-label text-base transition-colors min-h-[48px] flex items-center cursor-pointer ${
+              activePage === "pricing"
+                ? "bg-primary/10 text-primary font-bold"
+                : "text-on-surface hover:bg-surface-container-low"
+            }`}
+          >
+            Pricing & Packages
+          </button>
 
           <button
             onClick={() => handleNavigate("about")}

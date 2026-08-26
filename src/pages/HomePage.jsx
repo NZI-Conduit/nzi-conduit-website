@@ -114,8 +114,8 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
             <Button size="lg" variant="primary" onClick={onRequestAudit} icon="bolt">
               Request Free Audit
             </Button>
-            <Button size="lg" variant="outline" onClick={() => onNavigate("services")} icon="grid_view">
-              Explore Services
+            <Button size="lg" variant="outline" onClick={() => onNavigate("pricing")} icon="receipt_long">
+              View Pricing & Packages
             </Button>
           </motion.div>
         </motion.div>

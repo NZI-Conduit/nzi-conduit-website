@@ -4,9 +4,11 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import HomePage from "../pages/HomePage";
 import { RequestAuditModal } from "../components/ui/RequestAuditModal";
+import { isValidPackageId } from "../data/servicePackages";
 
 // Lazy-load secondary pages for code splitting & fast initial load
 const ServicesPage = lazy(() => import("../pages/ServicesPage"));
+const PricingPage = lazy(() => import("../pages/PricingPage"));
 const CybersecurityPage = lazy(() => import("../pages/CybersecurityPage"));
 const SeoPage = lazy(() => import("../pages/SeoPage"));
 const WebDevPage = lazy(() => import("../pages/WebDevPage"));
@@ -61,22 +63,71 @@ export default function App() {
   const [activePage, setActivePage] = useState("home");
   const [isNavigating, setIsNavigating] = useState(false);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+  const [selectedPackageId, setSelectedPackageId] = useState(null);
+  const [highlightedPackageId, setHighlightedPackageId] = useState(null);
   const prefersReducedMotion = useReducedMotion();
 
-  const handleNavigate = (page) => {
-    const targetPage = page === "pricing" ? "services" : page;
-    if (targetPage === activePage) return;
+  // Phase 4: Zero-dependency URL path and query param synchronization
+  useEffect(() => {
+    const syncFromLocation = () => {
+      const pathname = window.location.pathname.replace(/^\/+|\/+$/g, "");
+      const params = new URLSearchParams(window.location.search);
+      const pageParam = params.get("page");
+      const packageParam = params.get("package");
+
+      const resolvedPage = pathname || pageParam || "home";
+      const validPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about"];
+
+      if (validPages.includes(resolvedPage)) {
+        setActivePage(resolvedPage);
+      }
+
+      if (packageParam && isValidPackageId(packageParam)) {
+        setHighlightedPackageId(packageParam);
+      } else {
+        setHighlightedPackageId(null);
+      }
+    };
+
+    syncFromLocation();
+    window.addEventListener("popstate", syncFromLocation);
+    return () => window.removeEventListener("popstate", syncFromLocation);
+  }, []);
+
+  const handleNavigate = (page, packageId = null) => {
+    if (page === activePage && !packageId) return;
+
     setIsNavigating(true);
-    setActivePage(targetPage);
+    setActivePage(page);
+
+    if (packageId && isValidPackageId(packageId)) {
+      setHighlightedPackageId(packageId);
+    }
+
+    // Update browser URL state cleanly
+    const newPath = page === "home" ? "/" : `/${page}`;
+    const newSearch = packageId && isValidPackageId(packageId) ? `?package=${packageId}` : "";
+    window.history.pushState({}, "", `${newPath}${newSearch}`);
+
     window.scrollTo({ top: 0, behavior: "instant" });
     setTimeout(() => setIsNavigating(false), 300);
   };
 
-  const handleOpenAuditModal = () => {
+  const handleOpenAuditModal = (packageId = null) => {
+    if (packageId && isValidPackageId(packageId)) {
+      setSelectedPackageId(packageId);
+    } else {
+      setSelectedPackageId(null);
+    }
     setIsAuditModalOpen(true);
   };
 
-  const knownPages = ["home", "services", "cybersecurity", "seo", "webdev", "about"];
+  const handleCloseAuditModal = () => {
+    setIsAuditModalOpen(false);
+    setSelectedPackageId(null);
+  };
+
+  const knownPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about"];
   const is404 = !knownPages.includes(activePage);
 
   return (
@@ -88,7 +139,7 @@ export default function App() {
       <Navbar
         activePage={activePage}
         onNavigate={handleNavigate}
-        onRequestAudit={handleOpenAuditModal}
+        onRequestAudit={() => handleOpenAuditModal(null)}
       />
 
       {/* Page Content with Smooth Transition */}
@@ -103,22 +154,47 @@ export default function App() {
               transition={{ duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
             >
               {activePage === "home" && (
-                <HomePage onNavigate={handleNavigate} onRequestAudit={handleOpenAuditModal} />
+                <HomePage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
               )}
               {activePage === "services" && (
-                <ServicesPage onNavigate={handleNavigate} onRequestAudit={handleOpenAuditModal} />
+                <ServicesPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
+              )}
+              {activePage === "pricing" && (
+                <PricingPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={handleOpenAuditModal}
+                  highlightedPackageId={highlightedPackageId}
+                />
               )}
               {activePage === "cybersecurity" && (
-                <CybersecurityPage onNavigate={handleNavigate} onRequestAudit={handleOpenAuditModal} />
+                <CybersecurityPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
               )}
               {activePage === "seo" && (
-                <SeoPage onNavigate={handleNavigate} onRequestAudit={handleOpenAuditModal} />
+                <SeoPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
               )}
               {activePage === "webdev" && (
-                <WebDevPage onNavigate={handleNavigate} onRequestAudit={handleOpenAuditModal} />
+                <WebDevPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
               )}
               {activePage === "about" && (
-                <AboutPage onNavigate={handleNavigate} onRequestAudit={handleOpenAuditModal} />
+                <AboutPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
               )}
               {is404 && <NotFoundPage onNavigate={handleNavigate} />}
             </motion.div>
@@ -127,12 +203,16 @@ export default function App() {
       </main>
 
       {/* Single Shared Footer */}
-      <Footer onNavigate={handleNavigate} onRequestAudit={handleOpenAuditModal} />
+      <Footer
+        onNavigate={handleNavigate}
+        onRequestAudit={() => handleOpenAuditModal(null)}
+      />
 
       {/* Shared Interactive Request Audit Modal */}
       <RequestAuditModal
         isOpen={isAuditModalOpen}
-        onClose={() => setIsAuditModalOpen(false)}
+        onClose={handleCloseAuditModal}
+        selectedPackageId={selectedPackageId}
       />
     </div>
   );
