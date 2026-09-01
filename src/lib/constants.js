@@ -11,7 +11,7 @@ export const COMPANY_DETAILS = {
   },
   phone: "+1 (623) 696-0138",
   phoneRaw: "+16236960138",
-  email: "admin@nziconduit.com",
+  email: "start@nziconduit.com",
   mapUrl: "https://maps.google.com/?q=12725+W+Indian+School+Rd+Suite+E-101+Avondale+AZ+85392",
 };
 
