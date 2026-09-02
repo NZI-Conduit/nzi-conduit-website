@@ -98,15 +98,24 @@ export function RequestAuditModal({ isOpen, onClose, selectedPackageId = null })
           {/* Selected Package Banner */}
           {selectedPkg && (
             <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-on-surface flex items-start gap-3">
-              <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-mono text-xs font-bold shrink-0 mt-0.5 shadow-sm">
-                {selectedPkg.code}
+              <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                <span className="material-symbols-outlined text-[22px]">
+                  {selectedPkg.icon || "inventory_2"}
+                </span>
               </div>
-              <div className="text-xs flex-1">
-                <div className="font-bold text-blue-900 flex items-center justify-between">
-                  <span>{selectedPkg.name}</span>
-                  <span className="text-blue-700 font-mono font-semibold">{selectedPkg.priceFormatted}</span>
+              <div className="text-xs flex-1 min-w-0">
+                <div className="font-bold text-blue-900 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-blue-600/15 text-blue-700 font-bold border border-blue-600/25 shrink-0">
+                      {selectedPkg.code}
+                    </span>
+                    <span className="truncate">{selectedPkg.name}</span>
+                  </div>
+                  <span className="text-blue-700 font-mono font-semibold shrink-0">
+                    {selectedPkg.priceFormatted}
+                  </span>
                 </div>
-                <div className="text-slate-600 text-[11px] mt-0.5">
+                <div className="text-slate-600 text-[11px] mt-1 leading-relaxed">
                   {selectedPkg.kind} · {selectedPkg.timeline}
                 </div>
               </div>

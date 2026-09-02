@@ -20,6 +20,7 @@ export function PackageCard({
   const {
     id,
     code,
+    icon,
     name,
     kind,
     badge,
@@ -69,8 +70,9 @@ export function PackageCard({
       <div className="flex flex-col flex-grow">
         {/* Card Header */}
         <div className="flex items-center justify-between gap-3 mb-2">
-          <span className="font-mono text-xs text-[#5B87A8] tracking-widest font-semibold">
-            {code}
+          <span className="font-mono text-xs text-[#5B87A8] tracking-widest font-semibold flex items-center gap-1.5">
+            {icon && <span className="material-symbols-outlined text-[16px]">{icon}</span>}
+            <span>{code}</span>
           </span>
           <span
             className={`font-mono text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded font-bold ${

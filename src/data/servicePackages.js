@@ -7,6 +7,7 @@ export const SERVICE_PACKAGES = [
   {
     id: "pkg-01",
     code: "PKG 01",
+    icon: "code",
     name: "Launch Site",
     kind: "Web development · one-time project",
     category: "webdev",
@@ -49,6 +50,7 @@ export const SERVICE_PACKAGES = [
   {
     id: "pkg-02",
     code: "PKG 02",
+    icon: "trending_up",
     name: "Local Visibility SEO",
     kind: "SEO · monthly retainer",
     category: "seo",
@@ -87,6 +89,7 @@ export const SERVICE_PACKAGES = [
   {
     id: "pkg-03",
     code: "PKG 03",
+    icon: "smart_display",
     name: "Reel Batch",
     kind: "AI video production · monthly retainer",
     category: "video",
@@ -122,6 +125,7 @@ export const SERVICE_PACKAGES = [
   {
     id: "pkg-04",
     code: "PKG 04",
+    icon: "rocket_launch",
     name: "Growth Partner",
     kind: "Web + SEO + Video · bundled retainer",
     category: "bundle",
