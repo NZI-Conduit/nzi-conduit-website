@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "./ui/Button";
 import { COMPANY_DETAILS } from "../lib/constants";
+import { prefetchPage } from "../lib/prefetch";
 
 export default function Footer({ onNavigate, onRequestAudit }) {
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -66,7 +67,11 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                       mail
                     </span>
                     <input
+                      id="newsletter-email"
+                      name="email"
+                      aria-label="Enter your email address"
                       type="email"
+                      autoComplete="email"
                       required
                       placeholder="Enter your email address"
                       value={newsletterEmail}
@@ -119,6 +124,10 @@ export default function Footer({ onNavigate, onRequestAudit }) {
             >
               <img
                 alt="NZI Conduit Logo"
+                width="32"
+                height="32"
+                loading="lazy"
+                decoding="async"
                 className="h-8 w-8 rounded-full object-contain shadow-sm"
                 src="/logo.png"
               />
@@ -183,6 +192,8 @@ export default function Footer({ onNavigate, onRequestAudit }) {
               <li>
                 <button
                   onClick={() => onNavigate("home")}
+                  onMouseEnter={() => prefetchPage("home")}
+                  onFocus={() => prefetchPage("home")}
                   className="hover:text-white hover:translate-x-1 transition-all duration-200 cursor-pointer text-left inline-block"
                 >
                   Home
@@ -191,6 +202,8 @@ export default function Footer({ onNavigate, onRequestAudit }) {
               <li>
                 <button
                   onClick={() => onNavigate("about")}
+                  onMouseEnter={() => prefetchPage("about")}
+                  onFocus={() => prefetchPage("about")}
                   className="hover:text-white hover:translate-x-1 transition-all duration-200 cursor-pointer text-left inline-block"
                 >
                   About Us
@@ -207,6 +220,8 @@ export default function Footer({ onNavigate, onRequestAudit }) {
               <li>
                 <button
                   onClick={() => onNavigate("services")}
+                  onMouseEnter={() => prefetchPage("services")}
+                  onFocus={() => prefetchPage("services")}
                   className="hover:text-white hover:translate-x-1 transition-all duration-200 cursor-pointer text-left inline-block"
                 >
                   Services Overview
@@ -215,6 +230,8 @@ export default function Footer({ onNavigate, onRequestAudit }) {
               <li>
                 <button
                   onClick={() => onNavigate("pricing")}
+                  onMouseEnter={() => prefetchPage("pricing")}
+                  onFocus={() => prefetchPage("pricing")}
                   className="hover:text-white hover:translate-x-1 transition-all duration-200 cursor-pointer text-left inline-block text-amber-400 font-semibold"
                 >
                   Pricing & Packages
@@ -241,6 +258,8 @@ export default function Footer({ onNavigate, onRequestAudit }) {
               <li>
                 <button
                   onClick={() => onNavigate("webdev")}
+                  onMouseEnter={() => prefetchPage("webdev")}
+                  onFocus={() => prefetchPage("webdev")}
                   className="hover:text-white hover:translate-x-1 transition-all duration-200 cursor-pointer text-left inline-block"
                 >
                   Web Development
@@ -249,6 +268,8 @@ export default function Footer({ onNavigate, onRequestAudit }) {
               <li>
                 <button
                   onClick={() => onNavigate("seo")}
+                  onMouseEnter={() => prefetchPage("seo")}
+                  onFocus={() => prefetchPage("seo")}
                   className="hover:text-white hover:translate-x-1 transition-all duration-200 cursor-pointer text-left inline-block"
                 >
                   SEO Optimization
@@ -257,6 +278,8 @@ export default function Footer({ onNavigate, onRequestAudit }) {
               <li>
                 <button
                   onClick={() => onNavigate("cybersecurity")}
+                  onMouseEnter={() => prefetchPage("cybersecurity")}
+                  onFocus={() => prefetchPage("cybersecurity")}
                   className="hover:text-white hover:translate-x-1 transition-all duration-200 cursor-pointer text-left inline-block"
                 >
                   Cybersecurity Audit

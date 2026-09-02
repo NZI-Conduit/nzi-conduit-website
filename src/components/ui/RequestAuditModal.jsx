@@ -1,4 +1,4 @@
-import { useState, useEffect, useId } from "react";
+import { useState, useEffect, useCallback, useId } from "react";
 import { Modal } from "./Modal";
 import { Input } from "./Input";
 import { Button } from "./Button";
@@ -23,6 +23,8 @@ export function RequestAuditModal({ isOpen, onClose, selectedPackageId = null })
 
   // Sync selectedPackageId when prop changes or modal opens
   useEffect(() => {
+    if (!isOpen) return;
+
     if (selectedPkg) {
       setFormData((prev) => ({
         ...prev,
@@ -35,7 +37,7 @@ export function RequestAuditModal({ isOpen, onClose, selectedPackageId = null })
         selectedPackageId: null,
       }));
     }
-  }, [selectedPackageId, isOpen]);
+  }, [selectedPackageId, isOpen, selectedPkg]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,7 +49,7 @@ export function RequestAuditModal({ isOpen, onClose, selectedPackageId = null })
     }, 1200);
   };
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setIsSubmitted(false);
     setFormData({
       name: "",
@@ -58,7 +60,7 @@ export function RequestAuditModal({ isOpen, onClose, selectedPackageId = null })
       selectedPackageId: null,
     });
     onClose();
-  };
+  }, [onClose]);
 
   const modalTitle = selectedPkg
     ? `Discuss ${selectedPkg.code} · ${selectedPkg.name}`

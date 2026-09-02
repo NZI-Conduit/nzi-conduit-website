@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion, useAnimationFrame } from "motion/react";
+import { motion, useAnimationFrame, useReducedMotion } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
@@ -70,9 +70,28 @@ export function AuroraBars({
   const containerRef = React.useRef<HTMLDivElement>(null);
   const barRefs = React.useRef<(HTMLDivElement | null)[]>([]);
   const timeRef = React.useRef(0);
+  const [isInView, setIsInView] = React.useState(true);
+  const prefersReducedMotion = useReducedMotion();
+
+  // Performance: Pause animation loop when scrolled out of viewport
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting);
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Directly update DOM element styles in animation frame without triggering React state re-renders
   useAnimationFrame((_, delta) => {
+    if (!isInView || prefersReducedMotion) return;
     timeRef.current += (delta / 1000) * speed;
     const t = timeRef.current;
     for (let i = 0; i < barCount; i++) {
@@ -120,7 +139,7 @@ export function AuroraBars({
                   borderRadius: "9999px 9999px 0 0",
                   filter: blur > 0 ? `blur(${blur}px)` : undefined,
                   opacity: 0.85,
-                  willChange: "height",
+                  willChange: isInView && !prefersReducedMotion ? "height" : "auto",
                 }}
               />
             </div>

@@ -8,6 +8,11 @@ export function Modal({ isOpen, onClose, title, subtitle, children, maxWidth = "
   const subtitleId = useId();
   const prefersReducedMotion = useReducedMotion();
 
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   // Focus trap, ESC listener, and focus restoration
   useEffect(() => {
     if (!isOpen) return;
@@ -29,7 +34,7 @@ export function Modal({ isOpen, onClose, title, subtitle, children, maxWidth = "
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        onClose();
+        onCloseRef.current?.();
         return;
       }
 
@@ -71,7 +76,7 @@ export function Modal({ isOpen, onClose, title, subtitle, children, maxWidth = "
         previousActiveElement.current.focus();
       }
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   return (
     <AnimatePresence>

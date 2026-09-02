@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/Button";
+import { prefetchPage } from "../lib/prefetch";
 
 export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
@@ -62,6 +63,11 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
             <img
               src="/logo.png"
               alt="NZI Conduit Logo"
+              width="36"
+              height="36"
+              loading="eager"
+              fetchpriority="high"
+              decoding="async"
               className="h-9 w-9 object-contain rounded-full shadow-sm"
             />
             <span className="text-lg md:text-xl font-bold tracking-tight">NZI Conduit</span>
@@ -88,6 +94,8 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
                 aria-expanded={isServicesOpen}
                 aria-haspopup="true"
                 onClick={() => setIsServicesOpen(!isServicesOpen)}
+                onMouseEnter={() => prefetchPage("services")}
+                onFocus={() => prefetchPage("services")}
                 className={`px-4 py-2 text-sm font-label rounded-full transition-all duration-200 cursor-pointer flex items-center gap-1 ${
                   isServicesActive
                     ? "bg-white text-primary shadow-sm font-bold"
@@ -114,6 +122,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
                     role="menuitem"
                     className="w-full text-left px-3.5 py-3 rounded-xl hover:bg-primary/8 font-label text-sm transition-colors text-on-surface flex items-center gap-3 cursor-pointer group"
                     onClick={() => handleNavigate("services")}
+                    onMouseEnter={() => prefetchPage("services")}
                   >
                     <span className="material-symbols-outlined text-primary text-[20px]">
                       code
@@ -134,6 +143,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
                     role="menuitem"
                     className="w-full text-left px-3.5 py-3 rounded-xl hover:bg-primary/8 font-label text-sm transition-colors text-on-surface flex items-center gap-3 cursor-pointer group"
                     onClick={() => handleNavigate("webdev")}
+                    onMouseEnter={() => prefetchPage("webdev")}
                   >
                     <span className="material-symbols-outlined text-primary text-[20px]">
                       code
@@ -152,6 +162,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
                     role="menuitem"
                     className="w-full text-left px-3.5 py-3 rounded-xl hover:bg-primary/8 font-label text-sm transition-colors text-on-surface flex items-center gap-3 cursor-pointer group"
                     onClick={() => handleNavigate("seo")}
+                    onMouseEnter={() => prefetchPage("seo")}
                   >
                     <span className="material-symbols-outlined text-secondary text-[20px]">
                       search
@@ -170,6 +181,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
                     role="menuitem"
                     className="w-full text-left px-3.5 py-3 rounded-xl hover:bg-primary/8 font-label text-sm transition-colors text-on-surface flex items-center gap-3 cursor-pointer group"
                     onClick={() => handleNavigate("cybersecurity")}
+                    onMouseEnter={() => prefetchPage("cybersecurity")}
                   >
                     <span className="material-symbols-outlined text-tertiary text-[20px]">
                       security
@@ -190,6 +202,8 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
             <button
               type="button"
               onClick={() => handleNavigate("pricing")}
+              onMouseEnter={() => prefetchPage("pricing")}
+              onFocus={() => prefetchPage("pricing")}
               className={`px-4 py-2 text-sm font-label rounded-full transition-all duration-200 cursor-pointer ${
                 activePage === "pricing"
                   ? "bg-white text-primary shadow-sm font-bold"
@@ -202,6 +216,8 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
             <button
               type="button"
               onClick={() => handleNavigate("about")}
+              onMouseEnter={() => prefetchPage("about")}
+              onFocus={() => prefetchPage("about")}
               className={`px-4 py-2 text-sm font-label rounded-full transition-all duration-200 cursor-pointer ${
                 activePage === "about"
                   ? "bg-white text-primary shadow-sm font-bold"
@@ -266,7 +282,15 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
               handleNavigate("home");
             }}
           >
-            <img src="/logo.png" alt="NZI Conduit" className="h-8 w-auto object-contain" />
+            <img
+              src="/logo.png"
+              alt="NZI Conduit Logo"
+              width="32"
+              height="32"
+              loading="lazy"
+              decoding="async"
+              className="h-8 w-8 object-contain rounded-full shadow-sm"
+            />
             <span>NZI Conduit</span>
           </a>
           <button
@@ -295,6 +319,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
           <div>
             <button
               onClick={() => setIsMobileServicesOpen(!isMobileServicesOpen)}
+              onMouseEnter={() => prefetchPage("services")}
               className={`w-full text-left px-4 py-3 rounded-xl font-label text-base transition-colors min-h-[48px] flex items-center justify-between cursor-pointer ${
                 isServicesActive
                   ? "bg-primary/10 text-primary font-bold"
@@ -315,24 +340,28 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
               <div className="ml-4 mt-1 space-y-1 border-l-2 border-primary/20 pl-4">
                 <button
                   onClick={() => handleNavigate("services")}
+                  onMouseEnter={() => prefetchPage("services")}
                   className="w-full text-left px-3 py-3 rounded-lg font-label text-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors min-h-[44px] flex items-center cursor-pointer"
                 >
                   All Services
                 </button>
                 <button
                   onClick={() => handleNavigate("webdev")}
+                  onMouseEnter={() => prefetchPage("webdev")}
                   className="w-full text-left px-3 py-3 rounded-lg font-label text-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors min-h-[44px] flex items-center cursor-pointer"
                 >
                   Web Development
                 </button>
                 <button
                   onClick={() => handleNavigate("seo")}
+                  onMouseEnter={() => prefetchPage("seo")}
                   className="w-full text-left px-3 py-3 rounded-lg font-label text-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors min-h-[44px] flex items-center cursor-pointer"
                 >
                   SEO Optimization
                 </button>
                 <button
                   onClick={() => handleNavigate("cybersecurity")}
+                  onMouseEnter={() => prefetchPage("cybersecurity")}
                   className="w-full text-left px-3 py-3 rounded-lg font-label text-sm text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors min-h-[44px] flex items-center cursor-pointer"
                 >
                   Cybersecurity Audit
@@ -343,6 +372,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
 
           <button
             onClick={() => handleNavigate("pricing")}
+            onMouseEnter={() => prefetchPage("pricing")}
             className={`w-full text-left px-4 py-3 rounded-xl font-label text-base transition-colors min-h-[48px] flex items-center cursor-pointer ${
               activePage === "pricing"
                 ? "bg-primary/10 text-primary font-bold"
@@ -354,6 +384,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
 
           <button
             onClick={() => handleNavigate("about")}
+            onMouseEnter={() => prefetchPage("about")}
             className={`w-full text-left px-4 py-3 rounded-xl font-label text-base transition-colors min-h-[48px] flex items-center cursor-pointer ${
               activePage === "about"
                 ? "bg-primary/10 text-primary font-bold"
