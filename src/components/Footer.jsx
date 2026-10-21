@@ -122,15 +122,18 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                 onNavigate("home");
               }}
             >
-              <img
-                alt="NZI Conduit Logo"
-                width="32"
-                height="32"
-                loading="lazy"
-                decoding="async"
-                className="h-8 w-8 rounded-full object-contain shadow-sm"
-                src="/logo.png"
-              />
+              <picture>
+                <source srcSet="/logo.avif" type="image/avif" />
+                <img
+                  src="/logo-128.png"
+                  alt="NZI Conduit Logo"
+                  width="32"
+                  height="32"
+                  loading="lazy"
+                  decoding="async"
+                  className="h-8 w-8 rounded-full object-contain shadow-sm"
+                />
+              </picture>
               <span className="font-headline-md text-xl font-bold text-white tracking-tight">
                 NZI Conduit
               </span>

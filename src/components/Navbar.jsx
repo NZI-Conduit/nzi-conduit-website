@@ -60,16 +60,19 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
               handleNavigate("home");
             }}
           >
-            <img
-              src="/logo.png"
-              alt="NZI Conduit Logo"
-              width="36"
-              height="36"
-              loading="eager"
-              fetchpriority="high"
-              decoding="async"
-              className="h-9 w-9 object-contain rounded-full shadow-sm"
-            />
+            <picture>
+              <source srcSet="/logo.avif" type="image/avif" />
+              <img
+                src="/logo-128.png"
+                alt="NZI Conduit Logo"
+                width="36"
+                height="36"
+                loading="eager"
+                fetchpriority="high"
+                decoding="async"
+                className="h-9 w-9 object-contain rounded-full shadow-sm"
+              />
+            </picture>
             <span className="text-lg md:text-xl font-bold tracking-tight">NZI Conduit</span>
           </a>
 
@@ -282,15 +285,18 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
               handleNavigate("home");
             }}
           >
-            <img
-              src="/logo.png"
-              alt="NZI Conduit Logo"
-              width="32"
-              height="32"
-              loading="lazy"
-              decoding="async"
-              className="h-8 w-8 object-contain rounded-full shadow-sm"
-            />
+            <picture>
+              <source srcSet="/logo.avif" type="image/avif" />
+              <img
+                src="/logo-128.png"
+                alt="NZI Conduit Logo"
+                width="32"
+                height="32"
+                loading="lazy"
+                decoding="async"
+                className="h-8 w-8 object-contain rounded-full shadow-sm"
+              />
+            </picture>
             <span>NZI Conduit</span>
           </a>
           <button
