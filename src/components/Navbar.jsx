@@ -1,3 +1,4 @@
+import Icon from "./ui/Icon";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/Button";
 import { prefetchPage } from "../lib/prefetch";
@@ -106,13 +107,13 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
                 }`}
               >
                 <span>Services</span>
-                <span
-                  className={`material-symbols-outlined text-[18px] transition-transform duration-200 ${
+                <Icon
+                  name="expand_more"
+                  size={18}
+                  className={`transition-transform duration-200 ${
                     isServicesOpen ? "rotate-180 text-primary" : ""
                   }`}
-                >
-                  expand_more
-                </span>
+                />
               </button>
 
               {isServicesOpen && (
@@ -127,9 +128,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
                     onClick={() => handleNavigate("services")}
                     onMouseEnter={() => prefetchPage("services")}
                   >
-                    <span className="material-symbols-outlined text-primary text-[20px]">
-                      code
-                    </span>
+                    <Icon name="code" size={20} className="text-primary" />
                     <div>
                       <div className="font-bold text-on-surface group-hover:text-primary">
                         Services Overview
@@ -148,9 +147,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
                     onClick={() => handleNavigate("webdev")}
                     onMouseEnter={() => prefetchPage("webdev")}
                   >
-                    <span className="material-symbols-outlined text-primary text-[20px]">
-                      code
-                    </span>
+                    <Icon name="code" size={20} className="text-primary" />
                     <div>
                       <div className="font-bold text-on-surface group-hover:text-primary">
                         Web Development
@@ -167,9 +164,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
                     onClick={() => handleNavigate("seo")}
                     onMouseEnter={() => prefetchPage("seo")}
                   >
-                    <span className="material-symbols-outlined text-secondary text-[20px]">
-                      search
-                    </span>
+                    <Icon name="search" size={20} className="text-secondary" />
                     <div>
                       <div className="font-bold text-on-surface group-hover:text-primary">
                         SEO Optimization
@@ -186,9 +181,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
                     onClick={() => handleNavigate("cybersecurity")}
                     onMouseEnter={() => prefetchPage("cybersecurity")}
                   >
-                    <span className="material-symbols-outlined text-tertiary text-[20px]">
-                      security
-                    </span>
+                    <Icon name="security" size={20} className="text-tertiary" />
                     <div>
                       <div className="font-bold text-on-surface group-hover:text-primary">
                         Cybersecurity
@@ -248,9 +241,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
               aria-expanded={isMobileOpen}
               aria-label={isMobileOpen ? "Close menu" : "Open menu"}
             >
-              <span className="material-symbols-outlined text-[24px]">
-                {isMobileOpen ? "close" : "menu"}
-              </span>
+              <Icon name={isMobileOpen ? "close" : "menu"} size={24} />
             </button>
           </div>
         </div>
@@ -304,7 +295,7 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
             className="p-2 text-on-surface-variant rounded-full hover:bg-surface-variant/30 min-w-[44px] min-h-[44px] flex items-center justify-center cursor-pointer"
             aria-label="Close drawer"
           >
-            <span className="material-symbols-outlined">close</span>
+            <Icon name="close" />
           </button>
         </div>
 
@@ -333,13 +324,13 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
               }`}
             >
               <span>Services</span>
-              <span
-                className={`material-symbols-outlined text-[18px] transition-transform ${
+              <Icon
+                name="expand_more"
+                size={18}
+                className={`transition-transform ${
                   isMobileServicesOpen ? "rotate-180" : ""
                 }`}
-              >
-                expand_more
-              </span>
+              />
             </button>
 
             {isMobileServicesOpen && (

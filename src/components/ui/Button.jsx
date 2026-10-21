@@ -1,3 +1,4 @@
+import Icon from "./Icon";
 import { motion } from "motion/react";
 
 export function Button({
@@ -50,17 +51,17 @@ export function Button({
       {isLoading ? (
         <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-1.5" />
       ) : icon ? (
-        <span
-          className={`material-symbols-outlined text-[18px] transition-transform duration-200 ease-out ${
+        <Icon
+          name={icon}
+          size={18}
+          className={`transition-transform duration-200 ease-out ${
             icon === "arrow_forward" || icon === "chevron_right"
               ? "group-hover:translate-x-1"
               : icon === "bolt"
               ? "group-hover:scale-115 group-hover:-rotate-12"
               : "group-hover:scale-110"
           }`}
-        >
-          {icon}
-        </span>
+        />
       ) : null}
       {children}
     </motion.button>

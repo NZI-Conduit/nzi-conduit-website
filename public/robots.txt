@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://nziconduit.com/sitemap.xml

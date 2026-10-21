@@ -1,5 +1,3 @@
-import { COMPANY_DETAILS, JSON_LD_STRUCTURED_DATA } from "./constants";
-
 export const SEO_ROUTES = {
   home: {
     path: "/",
@@ -26,10 +24,10 @@ export const SEO_ROUTES = {
   pricing: {
     path: "/pricing",
     title: "Transparent Fixed Pricing & Packages | NZI Conduit",
-    description: "Fixed-scope engineering deliverables with locked boundaries. Compare our Starter, Growth, Enterprise, and Retainer packages.",
+    description: "Transparent, fixed-scope engineering packages: Launch Site ($3,500+), Local SEO ($900/mo), Reel Batch ($1,400/mo), and Growth Partner bundle. Clear milestones.",
     canonical: "https://nziconduit.com/pricing",
     ogTitle: "Transparent Fixed Pricing & Packages | NZI Conduit",
-    ogDescription: "Fixed-scope engineering deliverables with locked boundaries. Clear milestones, no open-ended guesswork.",
+    ogDescription: "Transparent, fixed-scope engineering packages: Launch Site ($3,500+), Local SEO ($900/mo), Reel Batch ($1,400/mo), and Growth Partner bundle. Clear milestones.",
     ogUrl: "https://nziconduit.com/pricing",
     ogImage: "https://nziconduit.com/logo.png",
     breadcrumbName: "Pricing & Packages",

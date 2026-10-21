@@ -1,3 +1,4 @@
+import Icon from "./Icon";
 import { useState, useEffect, useCallback, useId } from "react";
 import { Modal } from "./Modal";
 import { Input } from "./Input";
@@ -81,7 +82,7 @@ export function RequestAuditModal({ isOpen, onClose, selectedPackageId = null })
       {isSubmitted ? (
         <div className="py-8 text-center flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-full bg-emerald-500/15 text-emerald-600 flex items-center justify-center">
-            <span className="material-symbols-outlined text-[36px]">check_circle</span>
+            <Icon name="check_circle" size={36} />
           </div>
           <h4 className="font-headline-md text-xl font-bold text-on-surface">
             {selectedPkg ? "Inquiry Received!" : "Audit Request Received!"}
@@ -99,9 +100,7 @@ export function RequestAuditModal({ isOpen, onClose, selectedPackageId = null })
           {selectedPkg && (
             <div className="p-3.5 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-on-surface flex items-start gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
-                <span className="material-symbols-outlined text-[22px]">
-                  {selectedPkg.icon || "inventory_2"}
-                </span>
+                <Icon name={selectedPkg.icon || "inventory_2"} size={22} />
               </div>
               <div className="text-xs flex-1 min-w-0">
                 <div className="font-bold text-blue-900 flex items-center justify-between gap-2">

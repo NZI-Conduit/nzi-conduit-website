@@ -1,3 +1,4 @@
+import Icon from "../ui/Icon";
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Button } from "../ui/Button";
@@ -68,7 +69,7 @@ export function PackageCard({
         {/* Card Header */}
         <div className="flex items-center justify-between gap-3 mb-2">
           <span className="font-mono text-xs text-[#5B87A8] tracking-widest font-semibold flex items-center gap-1.5">
-            {icon && <span className="material-symbols-outlined text-[16px]">{icon}</span>}
+            {icon && <Icon name={icon} size={16} />}
             <span>{code}</span>
           </span>
           <span
@@ -155,13 +156,13 @@ export function PackageCard({
               aria-expanded={isScopeExpanded}
               className="inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-[#5B87A8] hover:text-white transition-colors cursor-pointer py-1"
             >
-              <span
-                className={`material-symbols-outlined text-[14px] transition-transform duration-200 ${
+              <Icon
+                name="expand_more"
+                size={14}
+                className={`transition-transform duration-200 ${
                   isScopeExpanded ? "rotate-180" : ""
                 }`}
-              >
-                expand_more
-              </span>
+              />
               <span>
                 {isScopeExpanded
                   ? "Hide full scope"
@@ -212,9 +213,7 @@ export function PackageCard({
         {/* Timeline & Boundary Notes */}
         <div className="space-y-2 text-xs py-3 border-t border-[#2B333C] mb-4 mt-auto">
           <div className="flex items-start gap-2 text-[#8B9490]">
-            <span className="material-symbols-outlined text-[#5B87A8] text-[16px] shrink-0 mt-0.5">
-              schedule
-            </span>
+            <Icon name="schedule" size={16} className="text-[#5B87A8] shrink-0 mt-0.5" />
             <span>
               <strong className="text-white font-mono font-semibold">Timeline: </strong>
               {timeline}
@@ -235,16 +234,16 @@ export function PackageCard({
               className="w-full flex items-center justify-between text-left font-mono text-xs uppercase tracking-wider text-[#5B87A8] hover:text-white py-1 transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[16px]">tune</span>
+                <Icon name="tune" size={16} />
                 <span>Optional Add-Ons Menu ({addons.length})</span>
               </span>
-              <span
-                className={`material-symbols-outlined text-[18px] transition-transform duration-200 ${
+              <Icon
+                name="expand_more"
+                size={18}
+                className={`transition-transform duration-200 ${
                   isAddonsOpen ? "rotate-180 text-white" : ""
                 }`}
-              >
-                expand_more
-              </span>
+              />
             </button>
 
             {isAddonsOpen && (

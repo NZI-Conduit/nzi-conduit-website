@@ -1,3 +1,4 @@
+import Icon from "./Icon";
 import { useEffect, useRef, useId } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 
@@ -133,7 +134,7 @@ export function Modal({ isOpen, onClose, title, subtitle, children, maxWidth = "
                 className="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/40 rounded-full transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none shrink-0"
                 aria-label="Close dialog"
               >
-                <span className="material-symbols-outlined text-[20px]">close</span>
+                <Icon name="close" size={20} />
               </button>
             </div>
 

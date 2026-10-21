@@ -1,3 +1,4 @@
+import Icon from "./Icon";
 import { useId } from "react";
 
 export function Input({
@@ -30,9 +31,7 @@ export function Input({
       )}
       <div className="relative flex items-center">
         {icon && (
-          <span className="material-symbols-outlined absolute left-3.5 text-on-surface-variant/60 text-[20px] pointer-events-none">
-            {icon}
-          </span>
+          <Icon name={icon} size={20} className="absolute left-3.5 text-on-surface-variant/60 pointer-events-none" />
         )}
         <input
           id={id}

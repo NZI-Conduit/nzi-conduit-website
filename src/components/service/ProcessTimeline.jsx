@@ -1,3 +1,4 @@
+import Icon from "../ui/Icon";
 import { motion, useReducedMotion } from "motion/react";
 import { Badge } from "../ui/Badge";
 
@@ -29,9 +30,7 @@ export function ProcessTimeline({ badgeText = "Workflow", title, description, st
                   <span className="w-10 h-10 rounded-xl bg-primary text-on-primary font-label text-sm font-bold flex items-center justify-center shadow-sm transition-transform duration-200 ease-out group-hover:scale-110">
                     0{i + 1}
                   </span>
-                  <span className="material-symbols-outlined text-on-surface-variant/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200 text-[20px]">
-                    arrow_forward
-                  </span>
+                  <Icon name="arrow_forward" size={20} className="text-on-surface-variant/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
                 </div>
                 <h3 className="font-headline text-base font-bold text-on-surface mb-2">{step.title}</h3>
                 <p className="font-body text-xs text-on-surface-variant leading-relaxed">{step.description}</p>

@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon";
 import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { AuroraBars } from "../components/aurora-bars";
@@ -114,7 +115,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
           <div className="p-5 rounded-2xl bg-card text-card-foreground border border-outline-variant/20 shadow-xs flex flex-col justify-between hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-[transform,box-shadow,border-color] duration-200 ease-out">
             <div className="flex items-center justify-between mb-3">
               <span className="font-label text-xs font-semibold text-on-surface-variant">Infrastructure Uptime</span>
-              <span className="material-symbols-outlined text-emerald-500 text-[20px]">verified</span>
+              <Icon name="verified" size={20} className="text-emerald-500" />
             </div>
             <span className="font-hero-lg text-3xl sm:text-4xl font-extrabold text-on-surface tracking-tight">
               99.9%
@@ -124,7 +125,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
           <div className="p-5 rounded-2xl bg-card text-card-foreground border border-outline-variant/20 shadow-xs flex flex-col justify-between hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-[transform,box-shadow,border-color] duration-200 ease-out">
             <div className="flex items-center justify-between mb-3">
               <span className="font-label text-xs font-semibold text-on-surface-variant">Audit Turnaround SLA</span>
-              <span className="material-symbols-outlined text-primary text-[20px]">schedule</span>
+              <Icon name="schedule" size={20} className="text-primary" />
             </div>
             <span className="font-hero-lg text-3xl sm:text-4xl font-extrabold text-on-surface tracking-tight">
               &lt; 24h
@@ -134,7 +135,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
           <div className="p-5 rounded-2xl bg-card text-card-foreground border border-outline-variant/20 shadow-xs flex flex-col justify-between hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-[transform,box-shadow,border-color] duration-200 ease-out">
             <div className="flex items-center justify-between mb-3">
               <span className="font-label text-xs font-semibold text-on-surface-variant">Tailored Architecture</span>
-              <span className="material-symbols-outlined text-secondary text-[20px]">engineering</span>
+              <Icon name="engineering" size={20} className="text-secondary" />
             </div>
             <span className="font-hero-lg text-3xl sm:text-4xl font-extrabold text-on-surface tracking-tight">
               100%
@@ -144,7 +145,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
           <div className="p-5 rounded-2xl bg-card text-card-foreground border border-outline-variant/20 shadow-xs flex flex-col justify-between hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-[transform,box-shadow,border-color] duration-200 ease-out">
             <div className="flex items-center justify-between mb-3">
               <span className="font-label text-xs font-semibold text-on-surface-variant">Template Bloat</span>
-              <span className="material-symbols-outlined text-emerald-500 text-[20px]">block</span>
+              <Icon name="block" size={20} className="text-emerald-500" />
             </div>
             <span className="font-hero-lg text-3xl sm:text-4xl font-extrabold text-on-surface tracking-tight">
               0
@@ -178,7 +179,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
               >
                 <div>
                   <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6">
-                    <span className="material-symbols-outlined text-[24px]">code</span>
+                    <Icon name="code" size={24} />
                   </div>
                   <h3 className="font-headline-md text-xl font-bold text-on-surface mb-3">
                     Web Development & Performance
@@ -189,7 +190,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
                 </div>
                 <div className="flex items-center text-primary font-label text-sm font-bold gap-2">
                   <span>Explore Web Engineering</span>
-                  <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  <Icon name="arrow_forward" size={16} />
                 </div>
               </Card>
             </div>
@@ -202,7 +203,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
               >
                 <div>
                   <div className="w-12 h-12 rounded-2xl bg-secondary/10 text-secondary flex items-center justify-center mb-6">
-                    <span className="material-symbols-outlined text-[24px]">search</span>
+                    <Icon name="search" size={24} />
                   </div>
                   <h3 className="font-headline-md text-xl font-bold text-on-surface mb-3">
                     SEO & Digital Visibility
@@ -213,7 +214,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
                 </div>
                 <div className="flex items-center text-primary font-label text-sm font-bold gap-2">
                   <span>Explore SEO Strategy</span>
-                  <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  <Icon name="arrow_forward" size={16} />
                 </div>
               </Card>
             </div>
@@ -226,7 +227,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
               >
                 <div>
                   <div className="w-12 h-12 rounded-2xl bg-tertiary-container/15 text-tertiary flex items-center justify-center mb-6">
-                    <span className="material-symbols-outlined text-[24px]">security</span>
+                    <Icon name="security" size={24} />
                   </div>
                   <h3 className="font-headline-md text-xl font-bold text-on-surface mb-3">
                     Cybersecurity Audit
@@ -237,7 +238,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
                 </div>
                 <div className="flex items-center text-primary font-label text-sm font-bold gap-2">
                   <span>Explore Security Audits</span>
-                  <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  <Icon name="arrow_forward" size={16} />
                 </div>
               </Card>
             </div>
@@ -381,12 +382,11 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
                     className="w-full text-left p-5 sm:p-6 font-headline text-base sm:text-lg font-bold text-on-surface flex justify-between items-center gap-4 cursor-pointer"
                   >
                     <span>{faq.question}</span>
-                    <span
-                      className={`material-symbols-outlined text-primary text-[20px] transition-transform duration-200 ${isOpen ? "rotate-180" : ""
-                        }`}
-                    >
-                      expand_more
-                    </span>
+                    <Icon
+                      name="expand_more"
+                      size={20}
+                      className={`text-primary transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                    />
                   </button>
                   {isOpen && (
                     <div className="px-5 sm:px-6 pb-6 pt-0 font-body text-sm text-on-surface-variant leading-relaxed border-t border-outline-variant/10 pt-4">

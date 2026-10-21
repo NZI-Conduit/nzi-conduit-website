@@ -1,3 +1,4 @@
+import Icon from "../ui/Icon";
 import { Card } from "../ui/Card";
 import { Badge } from "../ui/Badge";
 
@@ -17,7 +18,7 @@ export function ProblemSection({ badgeText = "The Challenge", title, description
           {points.map((point, index) => (
             <Card key={index} hover={true} className="bg-surface text-left">
               <div className="w-10 h-10 rounded-xl bg-error/10 text-error flex items-center justify-center mb-4 transition-all duration-200 ease-out group-hover:scale-110 group-hover:bg-error/20">
-                <span className="material-symbols-outlined text-[22px] transition-transform duration-200 ease-out group-hover:rotate-12">warning</span>
+                <Icon name="warning" size={22} className="transition-transform duration-200 ease-out group-hover:rotate-12" />
               </div>
               <h3 className="font-headline text-lg font-bold text-on-surface mb-2 group-hover:text-error transition-colors">{point.title}</h3>
               <p className="font-body text-sm text-on-surface-variant leading-relaxed">{point.description}</p>

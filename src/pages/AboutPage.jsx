@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon";
 import { Badge } from "../components/ui/Badge";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
@@ -141,7 +142,7 @@ export default function AboutPage({ onNavigate, onRequestAudit }) {
                       {step.step}
                     </span>
                     <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center transition-all duration-200 ease-out group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
-                      <span className="material-symbols-outlined text-[20px]">{step.icon}</span>
+                      <Icon name={step.icon} size={20} />
                     </div>
                   </div>
                   <h3 className="font-headline text-base font-bold text-on-surface mb-2 group-hover:text-primary transition-colors">{step.title}</h3>
@@ -173,7 +174,7 @@ export default function AboutPage({ onNavigate, onRequestAudit }) {
               <Card key={index} hover className="text-left flex flex-col justify-between">
                 <div>
                   <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6 transition-all duration-200 ease-out group-hover:scale-110 group-hover:bg-primary group-hover:text-white">
-                    <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
+                    <Icon name={item.icon} size={24} />
                   </div>
                   <h3 className="font-headline-md text-xl font-bold text-on-surface mb-3 group-hover:text-primary transition-colors">
                     {item.title}
@@ -207,7 +208,7 @@ export default function AboutPage({ onNavigate, onRequestAudit }) {
             {differentiators.map((diff, i) => (
               <div key={i} className="group bg-surface p-6 rounded-2xl border border-outline-variant/20 shadow-2xs hover:border-emerald-500/40 hover:shadow-lg hover:-translate-y-1 active:scale-[0.98] transition-[transform,box-shadow,border-color] duration-200 ease-out text-left cursor-pointer">
                 <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-4 transition-all duration-200 ease-out group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white">
-                  <span className="material-symbols-outlined text-[20px]">check_circle</span>
+                  <Icon name="check_circle" size={20} />
                 </div>
                 <h3 className="font-headline text-base font-bold text-on-surface mb-2 group-hover:text-emerald-700 transition-colors">{diff.title}</h3>
                 <p className="font-body text-xs text-on-surface-variant leading-relaxed">{diff.description}</p>

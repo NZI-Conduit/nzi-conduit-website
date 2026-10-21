@@ -1,3 +1,4 @@
+import Icon from "./ui/Icon";
 import { useState } from "react";
 import { Button } from "./ui/Button";
 import { COMPANY_DETAILS } from "../lib/constants";
@@ -43,7 +44,7 @@ export default function Footer({ onNavigate, onRequestAudit }) {
           {/* Left Column (50%): Copy & Input */}
           <div className="lg:col-span-6 space-y-4 text-left">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 text-blue-400 text-xs font-label font-bold uppercase tracking-wider border border-blue-500/20">
-              <span className="material-symbols-outlined text-[16px]">mark_email_unread</span>
+              <Icon name="mark_email_unread" size={16} />
               <span>Engineering Digest</span>
             </div>
 
@@ -57,15 +58,13 @@ export default function Footer({ onNavigate, onRequestAudit }) {
             <form onSubmit={handleNewsletterSubmit} className="pt-2 flex flex-col sm:flex-row items-center gap-3">
               {isSubscribed ? (
                 <div className="w-full flex items-center gap-2 text-emerald-400 font-label text-sm font-semibold bg-emerald-500/10 px-4 py-3 rounded-full border border-emerald-500/20">
-                  <span className="material-symbols-outlined text-[18px]">check_circle</span>
+                  <Icon name="check_circle" size={18} />
                   <span>Thank you for subscribing!</span>
                 </div>
               ) : (
                 <>
                   <div className="relative w-full">
-                    <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[20px] pointer-events-none">
-                      mail
-                    </span>
+                    <Icon name="mail" size={20} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                     <input
                       id="newsletter-email"
                       name="email"
@@ -95,7 +94,7 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                 className="p-4 rounded-2xl bg-[#0F172A]/70 border border-slate-700/50 flex items-start gap-3.5 hover:border-blue-500/40 transition-colors"
               >
                 <div className="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[20px]">{b.icon}</span>
+                  <Icon name={b.icon} size={20} />
                 </div>
                 <div>
                   <h4 className="font-headline text-sm font-bold text-white">
@@ -149,7 +148,7 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                 <span>All Systems Operational</span>
               </div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1E293B] border border-slate-700 text-slate-300 text-[11px] font-label font-medium w-max">
-                <span className="material-symbols-outlined text-blue-400 text-[14px]">schedule</span>
+                <Icon name="schedule" size={14} className="text-blue-400" />
                 <span>Response SLA: &lt; 24 Hours</span>
               </div>
             </div>
@@ -163,7 +162,7 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                 aria-label="NZI Conduit GitHub"
                 className="w-9 h-9 rounded-full bg-[#1E293B] border border-slate-700 text-slate-300 hover:text-white hover:border-blue-500/50 flex items-center justify-center transition-all duration-200 hover:scale-105"
               >
-                <span className="material-symbols-outlined text-[18px]">code</span>
+                <Icon name="code" size={18} />
               </a>
               <a
                 href="https://twitter.com"
@@ -172,7 +171,7 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                 aria-label="NZI Conduit Twitter"
                 className="w-9 h-9 rounded-full bg-[#1E293B] border border-slate-700 text-slate-300 hover:text-white hover:border-blue-500/50 flex items-center justify-center transition-all duration-200 hover:scale-105"
               >
-                <span className="material-symbols-outlined text-[18px]">share</span>
+                <Icon name="share" size={18} />
               </a>
               <a
                 href="https://linkedin.com"
@@ -181,7 +180,7 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                 aria-label="NZI Conduit LinkedIn"
                 className="w-9 h-9 rounded-full bg-[#1E293B] border border-slate-700 text-slate-300 hover:text-white hover:border-blue-500/50 flex items-center justify-center transition-all duration-200 hover:scale-105"
               >
-                <span className="material-symbols-outlined text-[18px]">work</span>
+                <Icon name="work" size={18} />
               </a>
             </div>
           </div>
@@ -246,7 +245,7 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                   className="group hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1 text-blue-400"
                 >
                   <span>Request Audit</span>
-                  <span className="material-symbols-outlined text-[14px] transition-transform duration-200 group-hover:translate-x-1">arrow_forward</span>
+                  <Icon name="arrow_forward" size={14} className="transition-transform duration-200 group-hover:translate-x-1" />
                 </button>
               </li>
             </ul>
@@ -298,9 +297,7 @@ export default function Footer({ onNavigate, onRequestAudit }) {
             </h4>
             <ul className="space-y-3 font-body text-sm text-slate-400">
               <li className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-[18px] text-blue-400 mt-0.5 shrink-0">
-                  location_on
-                </span>
+                <Icon name="location_on" size={18} className="text-blue-400 mt-0.5 shrink-0" />
                 <a
                   href={COMPANY_DETAILS.mapUrl}
                   target="_blank"
@@ -314,9 +311,7 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                 </a>
               </li>
               <li className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-[18px] text-blue-400 shrink-0">
-                  call
-                </span>
+                <Icon name="call" size={18} className="text-blue-400 shrink-0" />
                 <a
                   href={`tel:${COMPANY_DETAILS.phoneRaw}`}
                   className="hover:text-white transition-colors text-slate-300"
@@ -325,9 +320,7 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                 </a>
               </li>
               <li className="flex items-center gap-3">
-                <span className="material-symbols-outlined text-[18px] text-blue-400 shrink-0">
-                  mail
-                </span>
+                <Icon name="mail" size={18} className="text-blue-400 shrink-0" />
                 <a
                   href={`mailto:${COMPANY_DETAILS.email}`}
                   className="hover:text-white transition-colors text-slate-300 break-all"

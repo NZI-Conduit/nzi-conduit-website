@@ -1,3 +1,4 @@
+import Icon from "../ui/Icon";
 import { useState } from "react";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
@@ -29,7 +30,7 @@ export function ServiceFaq({
             <div className="p-6 rounded-2xl bg-card text-card-foreground border border-outline-variant/20 shadow-xs space-y-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
-                  <span className="material-symbols-outlined text-[20px]">support_agent</span>
+                  <Icon name="support_agent" size={20} />
                 </div>
                 <div>
                   <h4 className="font-headline text-base font-bold text-on-surface">Have a specific question?</h4>
@@ -62,13 +63,13 @@ export function ServiceFaq({
                     className="w-full text-left p-5 sm:p-6 font-headline text-base sm:text-lg font-bold text-on-surface group-hover:text-primary transition-colors flex justify-between items-center gap-4 cursor-pointer"
                   >
                     <span>{faq.question}</span>
-                    <span
-                      className={`material-symbols-outlined text-primary text-[20px] transition-transform duration-200 group-hover:scale-115 shrink-0 ${
+                    <Icon
+                      name="expand_more"
+                      size={20}
+                      className={`text-primary transition-transform duration-200 group-hover:scale-115 shrink-0 ${
                         isOpen ? "rotate-180" : ""
                       }`}
-                    >
-                      expand_more
-                    </span>
+                    />
                   </button>
                   {isOpen && (
                     <div className="px-5 sm:px-6 pb-6 pt-0 font-body text-sm text-on-surface-variant leading-relaxed border-t border-outline-variant/10 pt-4">

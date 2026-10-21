@@ -1,3 +1,4 @@
+import Icon from "../ui/Icon";
 import { Button } from "../ui/Button";
 
 export function ServiceCtaBanner({
@@ -19,15 +20,15 @@ export function ServiceCtaBanner({
         {/* Floating Trust Badges */}
         <div className="flex flex-wrap items-center justify-center gap-3 text-xs font-label font-semibold text-primary-fixed mb-2">
           <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[16px] text-emerald-400">check_circle</span>
+            <Icon name="check_circle" size={16} className="text-emerald-400" />
             <span>24h Audit Delivery SLA</span>
           </span>
           <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[16px] text-emerald-400">check_circle</span>
+            <Icon name="check_circle" size={16} className="text-emerald-400" />
             <span>100% Code Ownership</span>
           </span>
           <span className="px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[16px] text-emerald-400">check_circle</span>
+            <Icon name="check_circle" size={16} className="text-emerald-400" />
             <span>Zero Contract Lock-in</span>
           </span>
         </div>

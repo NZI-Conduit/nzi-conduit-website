@@ -1,3 +1,4 @@
+import Icon from "./Icon";
 import React from "react";
 
 // Official brand SVG vector logos
@@ -142,10 +143,7 @@ export function TechLogo({ id, fallbackIcon = "terminal", className = "w-7 h-7" 
     return <SVGComponent className={`${className} object-contain`} aria-hidden="true" />;
   }
 
-  // Graceful fallback to Material Symbols icon
   return (
-    <span className={`material-symbols-outlined ${className} text-primary`} aria-hidden="true">
-      {fallbackIcon}
-    </span>
+    <Icon name={fallbackIcon} className={`${className} text-primary`} />
   );
 }

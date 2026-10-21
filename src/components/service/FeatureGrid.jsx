@@ -1,3 +1,4 @@
+import Icon from "../ui/Icon";
 import { motion, useReducedMotion } from "motion/react";
 import { Card } from "../ui/Card";
 import { Badge } from "../ui/Badge";
@@ -26,7 +27,7 @@ export function FeatureGrid({ badgeText = "Capabilities", title, description, fe
               <Card hover className="flex flex-col justify-between text-left h-full">
                 <div>
                   <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6">
-                    <span className="material-symbols-outlined text-[24px]">{feature.icon || "star"}</span>
+                    <Icon name={feature.icon || "star"} size={24} />
                   </div>
                   <h3 className="font-headline-md text-xl font-bold text-on-surface mb-3">{feature.title}</h3>
                   <p className="font-body text-sm text-on-surface-variant leading-relaxed">{feature.description}</p>

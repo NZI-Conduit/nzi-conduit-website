@@ -1,3 +1,4 @@
+import Icon from "../components/ui/Icon";
 import { Button } from "../components/ui/Button";
 
 export default function NotFoundPage({ onNavigate }) {
@@ -5,7 +6,7 @@ export default function NotFoundPage({ onNavigate }) {
     <main className="w-full min-h-[75vh] flex items-center justify-center bg-background px-4 sm:px-lg py-24 text-center">
       <div className="max-w-md mx-auto flex flex-col items-center gap-6">
         <div className="w-20 h-20 rounded-3xl bg-primary/10 text-primary flex items-center justify-center">
-          <span className="material-symbols-outlined text-[48px]">search_off</span>
+          <Icon name="search_off" size={48} />
         </div>
 
         <span className="font-label text-xs font-bold uppercase tracking-widest text-primary">

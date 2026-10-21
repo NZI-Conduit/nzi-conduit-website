@@ -1,3 +1,4 @@
+import Icon from "./Icon";
 export function Badge({
   children,
   variant = "primary",
@@ -33,7 +34,7 @@ export function Badge({
         <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
       )}
       {icon && (
-        <span className="material-symbols-outlined text-[14px]">{icon}</span>
+        <Icon name={icon} size={14} />
       )}
       {children}
     </span>

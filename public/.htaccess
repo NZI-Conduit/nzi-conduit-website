@@ -5,18 +5,28 @@
   RewriteEngine On
   RewriteBase /
 
-  # Serve existing files and directories directly
-  RewriteCond %{REQUEST_FILENAME} -f [OR]
-  RewriteCond %{REQUEST_FILENAME} -d
+  # 1. Canonical Redirect: Force HTTPS and redirect www -> apex domain in a single 301 hop
+  RewriteCond %{HTTPS} off [OR]
+  RewriteCond %{HTTP_HOST} ^www\.nziconduit\.com$ [NC]
+  RewriteRule ^(.*)$ https://nziconduit.com/$1 [R=301,L]
+
+  # 2. Serve existing physical files directly
+  RewriteCond %{REQUEST_FILENAME} -f
   RewriteRule ^ - [L]
 
-  # Rewrite clean route URLs to their pre-rendered directory index.html
+  # 3. Serve directory root directly if index.html exists
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_FILENAME}/index.html -f
+  RewriteRule ^ - [L]
+
+  # 4. Clean URLs: Rewrite /<route> or /<route>/ to /<route>/index.html
   RewriteCond %{DOCUMENT_ROOT}/$1/index.html -f
   RewriteRule ^([a-zA-Z0-9_-]+)/?$ $1/index.html [L]
 
-  # Fallback to SPA root for unknown client routes
-  RewriteRule ^index\.html$ - [L]
-  RewriteRule . /index.html [L]
+  # 5. Non-existent URLs: Return HTTP 404 with custom 404 page
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ - [R=404,L]
 </IfModule>
 
 # Custom 404 Error Page
@@ -26,14 +36,16 @@ ErrorDocument 404 /404.html
 <IfModule mod_mime.c>
   AddType image/avif .avif
   AddType font/woff2 .woff2
+  AddType text/plain .txt
+  AddType application/xml .xml
 </IfModule>
 
-# Gzip Compression
+# Gzip Compression (mod_deflate)
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
 </IfModule>
 
-# Browser Caching Headers
+# Browser Caching Headers (mod_expires)
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresDefault "access plus 1 month"
@@ -43,6 +55,8 @@ ErrorDocument 404 /404.html
   ExpiresByType font/woff2 "access plus 1 year"
   ExpiresByType text/css "access plus 1 year"
   ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/plain "access plus 1 day"
+  ExpiresByType application/xml "access plus 1 day"
 </IfModule>
 
 <IfModule mod_headers.c>

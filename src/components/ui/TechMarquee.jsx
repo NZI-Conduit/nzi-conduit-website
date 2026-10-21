@@ -1,3 +1,4 @@
+import Icon from "./Icon";
 import { useReducedMotion } from "motion/react";
 
 export function TechMarquee() {
@@ -41,12 +42,12 @@ export function TechMarquee() {
             key={`${tech.name}-${index}`}
             className="group flex items-center gap-2.5 px-4 py-2 rounded-xl bg-surface border border-outline-variant/15 transition-all duration-300 hover:scale-105 hover:shadow-md cursor-pointer shrink-0"
           >
-            <span
-              className="material-symbols-outlined text-[20px] text-on-surface-variant/50 transition-colors duration-300 group-hover:text-[var(--hover-color)]"
+            <Icon
+              name={tech.icon}
+              size={20}
+              className="text-on-surface-variant/50 transition-colors duration-300 group-hover:text-[var(--hover-color)]"
               style={{ "--hover-color": tech.color }}
-            >
-              {tech.icon}
-            </span>
+            />
             <span className="font-label text-xs font-semibold text-slate-600 transition-colors duration-300 group-hover:text-on-surface group-hover:font-bold">
               {tech.name}
             </span>

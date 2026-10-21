@@ -3,11 +3,11 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import puppeteer from "puppeteer-core";
+import { SEO_ROUTES, getBreadcrumbJsonLd } from "../src/lib/seo.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const rootDir = path.resolve(__dirname, "..");
 const distDir = path.resolve(rootDir, "dist");
-const publicDir = path.resolve(rootDir, "public");
 
 const CHROME_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const PORT = 5193;
@@ -23,93 +23,10 @@ const ROUTES = [
   { key: "404", path: "/404-snapshot-not-found", output: "404.html" },
 ];
 
-const SEO_METADATA = {
-  home: {
-    title: "NZI Conduit | Personalized IT Solutions",
-    description: "Direct engineer-backed web development, search engine strategy, and cybersecurity auditing structured specifically for creators and growing businesses.",
-    canonical: "https://nziconduit.com/",
-    ogTitle: "NZI Conduit | Personalized IT Solutions",
-    ogDescription: "Direct engineer-backed web development, search engine strategy, and cybersecurity auditing structured specifically for creators and growing businesses.",
-    ogUrl: "https://nziconduit.com/",
-    ogImage: "https://nziconduit.com/logo.png",
-    breadcrumb: null,
-  },
-  services: {
-    title: "Engineered Digital Services | NZI Conduit",
-    description: "Comprehensive IT services: custom web applications, precision search engine visibility, and proactive cybersecurity auditing.",
-    canonical: "https://nziconduit.com/services",
-    ogTitle: "Engineered Digital Services | NZI Conduit",
-    ogDescription: "Custom web applications, search engine strategy, and proactive cybersecurity auditing built by senior engineers.",
-    ogUrl: "https://nziconduit.com/services",
-    ogImage: "https://nziconduit.com/logo.png",
-    breadcrumb: "Services",
-  },
-  pricing: {
-    title: "Transparent Fixed Pricing & Packages | NZI Conduit",
-    description: "Fixed-scope engineering deliverables with locked boundaries. Compare our Starter, Growth, Enterprise, and Retainer packages.",
-    canonical: "https://nziconduit.com/pricing",
-    ogTitle: "Transparent Fixed Pricing & Packages | NZI Conduit",
-    ogDescription: "Fixed-scope engineering deliverables with locked boundaries. Clear milestones, no open-ended guesswork.",
-    ogUrl: "https://nziconduit.com/pricing",
-    ogImage: "https://nziconduit.com/logo.png",
-    breadcrumb: "Pricing & Packages",
-  },
-  cybersecurity: {
-    title: "Cybersecurity Audits & Vulnerability Assessments | NZI Conduit",
-    description: "Enterprise security auditing, penetration testing, and vulnerability assessments designed for independent businesses and modern apps.",
-    canonical: "https://nziconduit.com/cybersecurity",
-    ogTitle: "Cybersecurity Audits & Vulnerability Assessments | NZI Conduit",
-    ogDescription: "Enterprise security auditing, penetration testing, and vulnerability assessments designed for independent businesses and modern apps.",
-    ogUrl: "https://nziconduit.com/cybersecurity",
-    ogImage: "https://nziconduit.com/logo.png",
-    breadcrumb: "Cybersecurity Audits",
-  },
-  seo: {
-    title: "Technical Search Engine Optimization & Growth | NZI Conduit",
-    description: "Data-driven SEO strategies, technical audits, Core Web Vitals optimization, and keyword discovery to dominate organic search.",
-    canonical: "https://nziconduit.com/seo",
-    ogTitle: "Technical Search Engine Optimization & Growth | NZI Conduit",
-    ogDescription: "Data-driven SEO strategies, technical audits, Core Web Vitals optimization, and keyword discovery to dominate organic search.",
-    ogUrl: "https://nziconduit.com/seo",
-    ogImage: "https://nziconduit.com/logo.png",
-    breadcrumb: "SEO Strategy",
-  },
-  webdev: {
-    title: "Custom Web Application Development | NZI Conduit",
-    description: "High-performance modern web apps built with React, Vite, Tailwind CSS, and edge deployment for sub-second load times.",
-    canonical: "https://nziconduit.com/webdev",
-    ogTitle: "Custom Web Application Development | NZI Conduit",
-    ogDescription: "High-performance modern web apps built with React, Vite, Tailwind CSS, and edge deployment for sub-second load times.",
-    ogUrl: "https://nziconduit.com/webdev",
-    ogImage: "https://nziconduit.com/logo.png",
-    breadcrumb: "Web Development",
-  },
-  about: {
-    title: "About NZI Conduit | Senior Engineering IT Partner",
-    description: "Learn why NZI Conduit was founded: to give independent operators and high-growth teams direct access to senior engineers without corporate bloat.",
-    canonical: "https://nziconduit.com/about",
-    ogTitle: "About NZI Conduit | Senior Engineering IT Partner",
-    ogDescription: "Learn why NZI Conduit was founded: direct access to senior engineers without corporate bloat.",
-    ogUrl: "https://nziconduit.com/about",
-    ogImage: "https://nziconduit.com/logo.png",
-    breadcrumb: "About Us",
-  },
-  "404": {
-    title: "404 - Page Not Found | NZI Conduit",
-    description: "The page you are looking for does not exist or has been moved.",
-    canonical: "https://nziconduit.com/404",
-    ogTitle: "404 - Page Not Found | NZI Conduit",
-    ogDescription: "The page you are looking for does not exist or has been moved.",
-    ogUrl: "https://nziconduit.com/404",
-    ogImage: "https://nziconduit.com/logo.png",
-    breadcrumb: null,
-  },
-};
-
 const MIME_TYPES = {
-  ".html": "text/html",
-  ".js": "application/javascript",
-  ".css": "text/css",
+  ".html": "text/html; charset=utf-8",
+  ".js": "application/javascript; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
   ".json": "application/json",
   ".png": "image/png",
   ".avif": "image/avif",
@@ -143,7 +60,7 @@ function startServer() {
           res.end(`Server Error: ${err.code}`);
         } else {
           res.writeHead(200, { "Content-Type": contentType });
-          res.end(content, "utf-8");
+          res.end(content);
         }
       });
     });
@@ -209,13 +126,87 @@ Sitemap: https://nziconduit.com/sitemap.xml
 </urlset>
 `;
 
-  // Write to dist/ and public/
+  // Write strictly to dist/ (single source of truth at build time)
   fs.writeFileSync(path.join(distDir, "robots.txt"), robotsTxt, "utf8");
-  fs.writeFileSync(path.join(publicDir, "robots.txt"), robotsTxt, "utf8");
   fs.writeFileSync(path.join(distDir, "sitemap.xml"), sitemapXml, "utf8");
-  fs.writeFileSync(path.join(publicDir, "sitemap.xml"), sitemapXml, "utf8");
 
-  console.log("✓ Generated robots.txt and sitemap.xml");
+  console.log("✓ Generated dist/robots.txt and dist/sitemap.xml");
+}
+
+function findHashedFonts() {
+  const assetsDir = path.join(distDir, "assets");
+  if (!fs.existsSync(assetsDir)) return [];
+  const files = fs.readdirSync(assetsDir);
+  const inter = files.find((f) => f.startsWith("inter-latin-wght-normal") && f.endsWith(".woff2"));
+  const jakarta = files.find((f) => f.startsWith("plus-jakarta-sans-latin-wght-normal") && f.endsWith(".woff2"));
+  return [inter, jakarta].filter(Boolean);
+}
+
+function buildHtmlFromTemplate(templateHtml, rootInnerHtml, seo, breadcrumbJson, fontFiles) {
+  let html = templateHtml;
+
+  // 1. Replace title
+  html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${seo.title}</title>`);
+
+  // 2. Replace description
+  html = html.replace(
+    /<meta\s+name="description"\s+content="[^"]*"/i,
+    `<meta name="description" content="${seo.description}"`
+  );
+
+  // 3. Replace canonical
+  html = html.replace(
+    /<link\s+rel="canonical"\s+href="[^"]*"/i,
+    `<link rel="canonical" href="${seo.canonical}"`
+  );
+
+  // 4. Update OpenGraph and Twitter tags
+  html = html.replace(
+    /<meta\s+property="og:title"\s+content="[^"]*"/i,
+    `<meta property="og:title" content="${seo.ogTitle}"`
+  );
+  html = html.replace(
+    /<meta\s+property="og:description"\s+content="[^"]*"/i,
+    `<meta property="og:description" content="${seo.ogDescription}"`
+  );
+  html = html.replace(
+    /<meta\s+property="og:url"\s+content="[^"]*"/i,
+    `<meta property="og:url" content="${seo.ogUrl}"`
+  );
+  html = html.replace(
+    /<meta\s+name="twitter:title"\s+content="[^"]*"/i,
+    `<meta name="twitter:title" content="${seo.ogTitle}"`
+  );
+  html = html.replace(
+    /<meta\s+name="twitter:description"\s+content="[^"]*"/i,
+    `<meta name="twitter:description" content="${seo.ogDescription}"`
+  );
+
+  // 5. Inject font preloads into <head>
+  if (fontFiles.length > 0) {
+    const fontPreloads = fontFiles
+      .map((f) => `    <link rel="preload" href="/assets/${f}" as="font" type="font/woff2" crossorigin>`)
+      .join("\n");
+    html = html.replace("</head>", `${fontPreloads}\n  </head>`);
+  }
+
+  // 6. Inject BreadcrumbList JSON-LD if applicable
+  if (breadcrumbJson) {
+    const breadcrumbTag = `    <script id="jsonld-breadcrumbs" type="application/ld+json">\n${JSON.stringify(
+      breadcrumbJson,
+      null,
+      2
+    )}\n    </script>`;
+    html = html.replace("</head>", `${breadcrumbTag}\n  </head>`);
+  }
+
+  // 7. Inject pre-rendered #root content
+  html = html.replace(
+    /<div id="root"><\/div>/,
+    `<div id="root">${rootInnerHtml}</div>`
+  );
+
+  return html;
 }
 
 async function prerender() {
@@ -225,6 +216,11 @@ async function prerender() {
   }
 
   generateRobotsAndSitemap();
+
+  // Read base template from freshly built dist/index.html
+  const templateHtml = fs.readFileSync(path.join(distDir, "index.html"), "utf8");
+  const fontFiles = findHashedFonts();
+  console.log(`✓ Detected self-hosted fonts to preload: ${fontFiles.join(", ") || "none"}`);
 
   const server = await startServer();
   console.log(`✓ Local snapshot server started on http://localhost:${PORT}`);
@@ -252,93 +248,33 @@ async function prerender() {
       }
     });
 
-    // Small delay to let any microtasks settle
+    // Small delay to let animations settle
     await new Promise((r) => setTimeout(r, 200));
 
-    // Clean transient artifacts and inject per-route SEO tags
-    const meta = SEO_METADATA[route.key] || SEO_METADATA.home;
-    await page.evaluate((seo) => {
+    // Clean transient artifacts from snapshot DOM
+    await page.evaluate(() => {
       // 1. Remove TopProgressBar if present mid-animation
       document.querySelectorAll(".fixed.top-0.left-0.right-0.h-1").forEach((el) => el.remove());
 
-      // 2. Remove any modal backdrops or open overlays (excluding the permanent mobile drawer)
+      // 2. Remove open modal dialogs (excluding permanent mobile drawer)
       document.querySelectorAll('div[role="dialog"]:not([aria-label="Mobile Navigation Menu"])').forEach((el) => el.remove());
 
-      // 3. Remove any transient inline opacity: 0 or mid-animation transforms
+      // 3. Remove transient inline opacity: 0
       document.querySelectorAll('[style*="opacity"]').forEach((el) => {
         if (el.style.opacity === "0" || el.style.opacity === "0%") {
           el.style.opacity = "";
         }
       });
+    });
 
-      // 3. Update Title & Meta
-      document.title = seo.title;
+    // Extract ONLY the server-rendered #root innerHTML
+    const rootInnerHtml = await page.evaluate(() => document.getElementById("root").innerHTML);
 
-      const updateMeta = (name, content, attr = "name") => {
-        let el = document.querySelector(`meta[${attr}="${name}"]`);
-        if (!el) {
-          el = document.createElement("meta");
-          el.setAttribute(attr, name);
-          document.head.appendChild(el);
-        }
-        el.setAttribute("content", content);
-      };
+    const seo = SEO_ROUTES[route.key] || SEO_ROUTES.home;
+    const breadcrumbJson = getBreadcrumbJsonLd(route.key);
 
-      updateMeta("description", seo.description);
-      updateMeta("og:title", seo.ogTitle, "property");
-      updateMeta("og:description", seo.ogDescription, "property");
-      updateMeta("og:url", seo.ogUrl, "property");
-      updateMeta("og:image", seo.ogImage, "property");
-      updateMeta("twitter:title", seo.ogTitle, "name");
-      updateMeta("twitter:description", seo.ogDescription, "name");
-      updateMeta("twitter:image", seo.ogImage, "name");
-
-      let canonicalEl = document.querySelector('link[rel="canonical"]');
-      if (!canonicalEl) {
-        canonicalEl = document.createElement("link");
-        canonicalEl.setAttribute("rel", "canonical");
-        document.head.appendChild(canonicalEl);
-      }
-      canonicalEl.setAttribute("href", seo.canonical);
-
-      // 4. Inject BreadcrumbList JSON-LD if applicable
-      let breadcrumbScript = document.getElementById("jsonld-breadcrumbs");
-      if (seo.breadcrumb) {
-        if (!breadcrumbScript) {
-          breadcrumbScript = document.createElement("script");
-          breadcrumbScript.id = "jsonld-breadcrumbs";
-          breadcrumbScript.type = "application/ld+json";
-          document.head.appendChild(breadcrumbScript);
-        }
-        breadcrumbScript.textContent = JSON.stringify(
-          {
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://nziconduit.com/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": seo.breadcrumb,
-                "item": seo.canonical
-              }
-            ]
-          },
-          null,
-          2
-        );
-      } else if (breadcrumbScript) {
-        breadcrumbScript.remove();
-      }
-    }, meta);
-
-    // Extract full HTML
-    const html = await page.evaluate(() => "<!doctype html>\n" + document.documentElement.outerHTML);
+    // Build the clean HTML strictly from template (no mutated runtime head)
+    const finalHtml = buildHtmlFromTemplate(templateHtml, rootInnerHtml, seo, breadcrumbJson, fontFiles);
 
     const outputPath = path.join(distDir, route.output);
     const outputFolder = path.dirname(outputPath);
@@ -346,7 +282,7 @@ async function prerender() {
       fs.mkdirSync(outputFolder, { recursive: true });
     }
 
-    fs.writeFileSync(outputPath, html, "utf8");
+    fs.writeFileSync(outputPath, finalHtml, "utf8");
     const stat = fs.statSync(outputPath);
     console.log(`  ✓ Written ${outputPath.replace(rootDir + "/", "")} (${(stat.size / 1024).toFixed(2)} KB)`);
   }
