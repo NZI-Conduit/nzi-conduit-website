@@ -12,29 +12,17 @@ export function FeatureGrid({ badgeText = "Capabilities", title, description, fe
       <div className="absolute inset-0 bg-dot-pattern opacity-25 pointer-events-none" />
 
       <div className="w-full max-w-container-max mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="text-center max-w-[700px] mx-auto mb-12 sm:mb-16"
-        >
+        <div className="text-center max-w-[700px] mx-auto mb-12 sm:mb-16">
           <Badge variant="primary" className="mb-3">
             {badgeText}
           </Badge>
           <h2 className="font-hero-lg text-hero-lg text-on-surface mb-4">{title}</h2>
           <p className="font-body-lg text-on-surface-variant text-base sm:text-lg">{description}</p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
           {features.map((feature, i) => (
-            <motion.div
-              key={i}
-              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-30px" }}
-              transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
-            >
+            <div key={i} className="h-full">
               <Card hover className="flex flex-col justify-between text-left h-full">
                 <div>
                   <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6">
@@ -49,7 +37,7 @@ export function FeatureGrid({ badgeText = "Capabilities", title, description, fe
                   </div>
                 )}
               </Card>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

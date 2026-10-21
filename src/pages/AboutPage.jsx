@@ -209,7 +209,7 @@ export default function AboutPage({ onNavigate, onRequestAudit }) {
                 <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-4 transition-all duration-200 ease-out group-hover:scale-110 group-hover:bg-emerald-500 group-hover:text-white">
                   <span className="material-symbols-outlined text-[20px]">check_circle</span>
                 </div>
-                <h4 className="font-headline text-base font-bold text-on-surface mb-2 group-hover:text-emerald-700 transition-colors">{diff.title}</h4>
+                <h3 className="font-headline text-base font-bold text-on-surface mb-2 group-hover:text-emerald-700 transition-colors">{diff.title}</h3>
                 <p className="font-body text-xs text-on-surface-variant leading-relaxed">{diff.description}</p>
               </div>
             ))}

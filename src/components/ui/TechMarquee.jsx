@@ -47,7 +47,7 @@ export function TechMarquee() {
             >
               {tech.icon}
             </span>
-            <span className="font-label text-xs font-semibold text-on-surface-variant/75 transition-colors duration-300 group-hover:text-on-surface group-hover:font-bold">
+            <span className="font-label text-xs font-semibold text-slate-600 transition-colors duration-300 group-hover:text-on-surface group-hover:font-bold">
               {tech.name}
             </span>
           </div>

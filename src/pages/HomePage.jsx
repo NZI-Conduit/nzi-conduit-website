@@ -66,67 +66,39 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent pointer-events-none" />
         </div>
 
-        <motion.div
-          className="w-full relative z-10 max-w-container-max mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center gap-lg md:gap-xl pt-12 md:pt-16 pb-16 md:pb-24"
-          initial={prefersReducedMotion ? "visible" : "hidden"}
-          animate="visible"
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }}
-        >
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 16 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.2, 0.8, 0.2, 1] } },
-            }}
-          >
+        <div className="w-full relative z-10 max-w-container-max mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center gap-lg md:gap-xl pt-12 md:pt-16 pb-16 md:pb-24">
+          <div>
             <Badge pulse variant="primary" size="md">
               IT Solutions for the Individual
             </Badge>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.2, 0.8, 0.2, 1] } },
-            }}
-            className="font-hero-lg text-4xl sm:text-5xl lg:text-6xl text-on-surface font-extrabold mb-2 max-w-[920px] leading-[1.12] tracking-[-0.03em] [text-wrap:balance]"
-          >
+          <h1 className="font-hero-lg text-4xl sm:text-5xl lg:text-6xl text-on-surface font-extrabold mb-2 max-w-[920px] leading-[1.12] tracking-[-0.03em] [text-wrap:balance]">
             Personalized IT Built to <br className="hidden md:block" />
             <span className="text-gradient">Fit Your Individual Needs</span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            variants={{
-              hidden: { opacity: 0, y: 16 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.2, 0.8, 0.2, 1] } },
-            }}
-            className="font-body-lg text-slate-800 font-medium max-w-[65ch] mx-auto text-lg md:text-xl leading-relaxed [text-wrap:pretty]"
-          >
+          <p className="font-body-lg text-slate-800 font-medium max-w-[65ch] mx-auto text-lg md:text-xl leading-relaxed [text-wrap:pretty]">
             NZI Conduit delivers enterprise-grade web development, search visibility, and cybersecurity auditing structured specifically for those largely excluded from legacy IT providers.
-          </motion.p>
+          </p>
 
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 12 },
-              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.2, 0.8, 0.2, 1] } },
-            }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-md w-full sm:w-auto pt-md"
-          >
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-md w-full sm:w-auto pt-md">
             <Button size="lg" variant="primary" onClick={onRequestAudit} icon="bolt">
               Request Free Audit
             </Button>
             <Button size="lg" variant="outline" onClick={() => onNavigate("pricing")} icon="receipt_long">
               View Pricing & Packages
             </Button>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       </section>
 
       {/* 2. DEDICATED POST-HERO TECHNOLOGY STACK TRUST SECTION (Soft blue gradient #EEF4FF -> #F8FAFC) */}
       <section className="w-full py-8 sm:py-10 bg-gradient-to-b from-[#EEF4FF] to-[#F8FAFC] border-b border-blue-100/60 overflow-hidden">
         <div className="w-full max-w-container-max mx-auto px-4 sm:px-6 lg:px-8 mb-4 text-center">
-          <h3 className="font-headline text-sm sm:text-base font-bold text-on-surface uppercase tracking-wider mb-1">
+          <h2 className="font-headline text-sm sm:text-base font-bold text-on-surface uppercase tracking-wider mb-1">
             Technologies We Engineer With
-          </h3>
+          </h2>
           <p className="font-body text-xs sm:text-sm text-on-surface-variant max-w-xl mx-auto">
             Modern tools powering high-performance web, cloud, and security solutions.
           </p>
@@ -138,13 +110,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
       {/* 3. METRICS BAR (Soft ambient background) */}
       <section className="w-full py-12 bg-gradient-to-b from-slate-50/80 via-[#F8FAFD] to-[#F5F9FF] border-b border-outline-variant/10 relative overflow-hidden">
         <div className="absolute inset-0 bg-dot-pattern opacity-20 pointer-events-none" />
-        <motion.div
-          initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-container-max mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-left relative z-10"
-        >
+        <div className="w-full max-w-container-max mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-left relative z-10">
           <div className="p-5 rounded-2xl bg-card text-card-foreground border border-outline-variant/20 shadow-xs flex flex-col justify-between hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] transition-[transform,box-shadow,border-color] duration-200 ease-out">
             <div className="flex items-center justify-between mb-3">
               <span className="font-label text-xs font-semibold text-on-surface-variant">Infrastructure Uptime</span>
@@ -184,20 +150,14 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
               0
             </span>
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* 4. CAPABILITIES BENTO GRID (Ambient Glow & Dot Grid) */}
       <section className="w-full py-section-py bg-gradient-to-b from-[#F5F9FF] via-white to-[#F0F6FE] bg-ambient-mesh border-b border-blue-100/60 relative overflow-hidden">
         <div className="absolute inset-0 bg-dot-pattern opacity-30 pointer-events-none" />
         <div className="w-full max-w-container-max mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center max-w-[700px] mx-auto mb-12 sm:mb-16"
-          >
+          <div className="text-center max-w-[700px] mx-auto mb-12 sm:mb-16">
             <Badge variant="primary" className="mb-3">
               Core Capabilities
             </Badge>
@@ -207,15 +167,10 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
             <p className="font-body-lg text-on-surface-variant text-base sm:text-lg">
               We eliminate technical overhead with dedicated engineering across web development, search visibility, and cybersecurity.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-lg md:gap-xl">
-            <motion.div
-              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
+            <div className="h-full">
               <Card
                 hover
                 className="flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-all duration-300 text-left"
@@ -237,14 +192,9 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
                   <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </div>
               </Card>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
+            <div className="h-full">
               <Card
                 hover
                 className="flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-all duration-300 text-left"
@@ -266,14 +216,9 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
                   <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </div>
               </Card>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
+            <div className="h-full">
               <Card
                 hover
                 className="flex flex-col justify-between h-full shadow-sm hover:shadow-xl transition-all duration-300 text-left"
@@ -295,7 +240,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
                   <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </div>
               </Card>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -303,13 +248,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
       {/* 5. PROCESS TIMELINE */}
       <section className="w-full py-section-py bg-surface-container-low/50 border-y border-outline-variant/10">
         <div className="w-full max-w-container-max mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center max-w-[700px] mx-auto mb-16"
-          >
+          <div className="text-center max-w-[700px] mx-auto mb-16">
             <Badge variant="primary" className="mb-3">
               Streamlined Process
             </Badge>
@@ -319,7 +258,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
             <p className="font-body-lg text-on-surface-variant text-base sm:text-lg">
               A transparent, 4-step engineering workflow built for clarity and speed.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
             {[
@@ -344,24 +283,20 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
                 desc: "Ongoing monitoring, proactive maintenance, and direct engineer access whenever you need help.",
               },
             ].map((p, idx) => (
-              <motion.div
+              <div
                 key={idx}
-                initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
                 className="flex flex-col items-start p-6 bg-surface rounded-2xl border border-outline-variant/20 shadow-2xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 text-left"
               >
                 <span className="w-9 h-9 rounded-xl bg-primary text-on-primary font-label text-sm font-bold flex items-center justify-center mb-4 shadow-sm">
                   {p.step}
                 </span>
-                <h4 className="font-headline text-base font-bold text-on-surface mb-2">
+                <h3 className="font-headline text-base font-bold text-on-surface mb-2">
                   {p.title}
-                </h4>
+                </h3>
                 <p className="font-body text-xs text-on-surface-variant leading-relaxed">
                   {p.desc}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -370,13 +305,7 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
       {/* 6. COMPARISON MATRIX */}
       <section className="w-full py-section-py bg-background border-b border-outline-variant/10 overflow-hidden">
         <div className="w-full max-w-container-max mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center max-w-[700px] mx-auto mb-14"
-          >
+          <div className="text-center max-w-[700px] mx-auto mb-14">
             <Badge variant="primary" className="mb-3">
               Why NZI Conduit
             </Badge>
@@ -386,14 +315,14 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
             <p className="font-body-lg text-on-surface-variant text-base sm:text-lg">
               See how our individualized approach compares to generic mass-market providers.
             </p>
-          </motion.div>
+          </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[600px] shadow-sm rounded-2xl overflow-hidden border border-outline-variant/15">
               <thead>
                 <tr className="border-b border-outline-variant/20 bg-surface-container-low">
                   <th className="py-4 px-6 font-headline text-sm text-on-surface font-bold">Feature</th>
-                  <th className="py-4 px-6 font-headline text-sm text-on-surface-variant opacity-70">Generic IT Providers</th>
+                  <th className="py-4 px-6 font-headline text-sm text-slate-700 font-semibold">Generic IT Providers</th>
                   <th className="py-4 px-6 font-headline text-sm text-primary font-bold bg-primary/10">NZI Conduit Approach</th>
                 </tr>
               </thead>

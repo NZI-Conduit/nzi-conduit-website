@@ -47,11 +47,8 @@ export function PackageCard({
   const hasScopeOverflow = includedRest.length > 0 || excluded.length > 0;
 
   return (
-    <motion.div
+    <div
       id={id}
-      initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
       className={`relative rounded-2xl bg-[#1B2128] text-[#DFE3E1] border transition-all duration-300 p-6 sm:p-8 flex flex-col justify-between h-full ${
         isWide ? "lg:col-span-2" : "col-span-1"
       } ${
@@ -281,6 +278,6 @@ export function PackageCard({
           Start Inquiry
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 }

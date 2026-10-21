@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import HomePage from "../pages/HomePage";
 import { RequestAuditModal } from "../components/ui/RequestAuditModal";
 import { isValidPackageId } from "../data/servicePackages";
+import { applySeoToDom } from "../lib/seo";
 
 // Lazy-load secondary pages for code splitting & fast initial load
 const ServicesPage = lazy(() => import("../pages/ServicesPage"));
@@ -40,8 +41,12 @@ function TopProgressBar({ isNavigating }) {
   return (
     <div className="fixed top-0 left-0 right-0 h-1 z-50 pointer-events-none bg-blue-100/50">
       <div
-        className="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-500 transition-all duration-300 ease-out shadow-[0_0_10px_rgba(37,99,235,0.8)]"
-        style={{ width: `${progress}%`, opacity: progress === 100 ? 0 : 1 }}
+        className="w-full h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-500 transition-all duration-300 ease-out shadow-[0_0_10px_rgba(37,99,235,0.8)]"
+        style={{
+          transform: `scaleX(${progress / 100})`,
+          transformOrigin: "left",
+          opacity: progress === 100 ? 0 : 1,
+        }}
       />
     </div>
   );
@@ -59,13 +64,31 @@ function PageLoader() {
   );
 }
 
+function getInitialPage() {
+  if (typeof window !== "undefined") {
+    const pathname = window.location.pathname.replace(/^\/+|\/+$/g, "");
+    const params = new URLSearchParams(window.location.search);
+    const pageParam = params.get("page");
+    const resolvedPage = pathname || pageParam || "home";
+    const validPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about"];
+    if (validPages.includes(resolvedPage)) return resolvedPage;
+    if (pathname) return "404";
+  }
+  return "home";
+}
+
 export default function App() {
-  const [activePage, setActivePage] = useState("home");
+  const [activePage, setActivePage] = useState(getInitialPage);
   const [isNavigating, setIsNavigating] = useState(false);
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState(null);
   const [highlightedPackageId, setHighlightedPackageId] = useState(null);
   const prefersReducedMotion = useReducedMotion();
+
+  // Synchronize SEO metadata to DOM whenever activePage changes
+  useEffect(() => {
+    applySeoToDom(activePage);
+  }, [activePage]);
 
   // Phase 4: Zero-dependency URL path and query param synchronization
   useEffect(() => {
@@ -80,6 +103,8 @@ export default function App() {
 
       if (validPages.includes(resolvedPage)) {
         setActivePage(resolvedPage);
+      } else if (pathname) {
+        setActivePage("404");
       }
 
       if (packageParam && isValidPackageId(packageParam)) {
@@ -108,6 +133,7 @@ export default function App() {
     const newPath = page === "home" ? "/" : `/${page}`;
     const newSearch = packageId && isValidPackageId(packageId) ? `?package=${packageId}` : "";
     window.history.pushState({}, "", `${newPath}${newSearch}`);
+    applySeoToDom(page);
 
     window.scrollTo({ top: 0, behavior: "instant" });
     setTimeout(() => setIsNavigating(false), 300);
@@ -145,7 +171,7 @@ export default function App() {
       {/* Page Content with Smooth Transition */}
       <main className="pt-14 md:pt-16">
         <Suspense fallback={<PageLoader />}>
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={activePage}
               initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}

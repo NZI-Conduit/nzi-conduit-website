@@ -67,47 +67,28 @@ export default function PricingPage({
       <section className="relative py-12 sm:py-16 md:py-20 border-b border-outline-variant/10">
         <div className="w-full max-w-container-max mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Eyebrow */}
-          <motion.div
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-primary border border-blue-500/20 font-mono text-xs uppercase tracking-widest font-semibold mb-4"
-          >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-primary border border-blue-500/20 font-mono text-xs uppercase tracking-widest font-semibold mb-4">
             <span className="w-2 h-0.5 bg-primary" />
             <span>Service Catalog · Rev 2026</span>
-          </motion.div>
+          </div>
 
           {/* Main Headline */}
-          <motion.h1
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold text-on-surface tracking-tight mb-4 max-w-3xl mx-auto"
-          >
+          <h1 className="font-display text-4xl sm:text-5xl md:text-6xl font-extrabold text-on-surface tracking-tight mb-4 max-w-3xl mx-auto">
             Fixed scope. <span className="text-gradient">No surprises.</span>
-          </motion.h1>
+          </h1>
 
           {/* Subtitle */}
-          <motion.p
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="font-body text-base sm:text-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed mb-8"
-          >
+          <p className="font-body text-base sm:text-lg text-on-surface-variant max-w-2xl mx-auto leading-relaxed mb-8">
             Four packages, each with a locked boundary on what's included. No unlimited revisions, no open-ended guesswork — just senior engineering deliverables at a fixed price.
-          </motion.p>
+          </p>
 
           {/* Capacity Gauge */}
-          <motion.div
-            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
+          <div>
             <CapacityGauge
               onDiscussOpening={() => onRequestAudit()}
               className="mb-8"
             />
-          </motion.div>
+          </div>
 
           {/* Starting Lineup Callout Strip */}
           <div className="w-full max-w-3xl mx-auto rounded-xl bg-surface-container-low border border-outline-variant/30 border-l-4 border-l-amber-500 p-4 text-left flex flex-col sm:flex-row sm:items-center gap-3">
