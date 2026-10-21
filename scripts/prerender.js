@@ -326,10 +326,74 @@ async function prerender() {
 
   await browser.close();
   server.close();
+
+  // Run build-time prerender sanity audit
+  validatePrerenderedOutput();
+
   console.log("=== PRE-RENDER COMPLETE ===\n");
 }
 
+function validatePrerenderedOutput() {
+  console.log("\n=== RUNNING BUILD-TIME PRE-RENDER SANITY AUDIT ===");
+  const issues = [];
+
+  for (const route of ROUTES) {
+    const filePath = path.join(distDir, route.output);
+    if (!fs.existsSync(filePath)) {
+      issues.push(`[${route.output}] Output file does not exist.`);
+      continue;
+    }
+
+    const html = fs.readFileSync(filePath, "utf8");
+    const headMatch = html.match(/<head[\s\S]*?<\/head>/i);
+    const head = headMatch ? headMatch[0] : "";
+
+    // 1. Must contain <h1> tag
+    if (!/<h1[\s>]/i.test(html)) {
+      issues.push(`[${route.output}] Missing required <h1> tag.`);
+    }
+
+    // 2. Must contain non-empty <title> tag
+    const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+    if (!titleMatch || !titleMatch[1].trim()) {
+      issues.push(`[${route.output}] Missing or empty <title> tag.`);
+    }
+
+    // 3. Must contain valid canonical link
+    if (!/<link[^>]+rel=["']canonical["'][^>]+href=["']https?:\/\/[^"']+["']/i.test(html)) {
+      issues.push(`[${route.output}] Missing valid <link rel="canonical"> tag.`);
+    }
+
+    // 4. Must contain valid JSON-LD structured data
+    const jsonLdMatch = html.match(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/i);
+    if (!jsonLdMatch || !jsonLdMatch[1].trim()) {
+      issues.push(`[${route.output}] Missing <script type="application/ld+json"> structured data.`);
+    } else {
+      try {
+        JSON.parse(jsonLdMatch[1].trim());
+      } catch (e) {
+        issues.push(`[${route.output}] Malformed JSON-LD structured data: ${e.message}`);
+      }
+    }
+
+    // 5. Must NOT contain runtime-mutation pattern in <head> such as media="all" onload
+    if (/media=["']all["'][^>]*onload|onload=["'][^"']*media=["']?all/i.test(head)) {
+      issues.push(`[${route.output}] Detected illegal runtime head mutation pattern (e.g. media="all" onload).`);
+    }
+  }
+
+  if (issues.length > 0) {
+    console.error("\n❌ PRE-RENDER SANITY AUDIT FAILED:");
+    for (const issue of issues) {
+      console.error(`  - ✗ ${issue}`);
+    }
+    throw new Error(`Pre-render sanity check failed with ${issues.length} error(s).`);
+  }
+
+  console.log("✓ Pre-render sanity audit passed: All 8 pages contain <h1>, <title>, canonical, JSON-LD, and zero head mutation patterns.");
+}
+
 prerender().catch((err) => {
-  console.error("Prerender failed:", err);
+  console.error(err.message || err);
   process.exit(1);
 });

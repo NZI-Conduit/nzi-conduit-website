@@ -125,3 +125,59 @@ The production `.htaccess` relies on standard Apache modules:
 - **`mod_deflate`:** If disabled, `curl -H "Accept-Encoding: gzip"` will omit the `Content-Encoding: gzip` header.
 - **`mod_headers`:** If disabled, the `Cache-Control` header will not include `immutable` for assets.
 - If Apache encounters an un-bracketed directive for an inactive module, it will return `500 Internal Server Error`. All directives in `.htaccess` are safeguarded with `<IfModule>` guards to prevent 500 errors.
+
+---
+
+## 3. Automated Performance Guardrails & CI Verification
+
+The project includes an automated performance guardrail suite to prevent performance, asset size, and SEO regressions before deploying to production.
+
+### How to Run the Guardrails
+```bash
+npm run perf
+```
+This script:
+1. Runs a full production build (`npm run build`), including the headless pre-render and static sanity check.
+2. Measures the total home-page JavaScript payload from actual `dist/` production chunks using Brotli compression.
+3. Spawns an isolated local compressing static server on port 4173.
+4. Executes Lighthouse Mobile audits across **all 7 production routes** (`/`, `/services`, `/pricing`, `/cybersecurity`, `/seo`, `/webdev`, `/about`), running **5 times per route** (35 runs total).
+5. Computes medians and min/max for each metric, prints a detailed summary table, and exits non-zero if any threshold is violated.
+
+### Enforced Thresholds & Definitions
+| Metric / Threshold | Requirement | What It Measures |
+| :--- | :---: | :--- |
+| **Performance Score** | `>= 95` | Overall Lighthouse mobile performance category score based on Web Vitals weighting. |
+| **Largest Contentful Paint (LCP)** | `<= 2,500 ms` | Time taken for the main above-the-fold content element (e.g. hero heading/paragraph) to render. |
+| **First Contentful Paint (FCP)** | `<= 2,500 ms` | Time taken for the browser to paint the first text or graphical element. |
+| **Cumulative Layout Shift (CLS)** | `<= 0.05` | Visual layout stability score during page load; verifies fonts, canvas, and layout shifts do not move content. |
+| **Total Blocking Time (TBT)** | `<= 150 ms` | Total main-thread blocking time between FCP and TTI caused by long JavaScript tasks (>50 ms). |
+| **Home-Page JS Size (Brotli)** | `<= 100 KB` | Sum of all JavaScript chunks loaded or preloaded by `dist/index.html`, compressed with Brotli. |
+
+### What to Do on Failure
+When `npm run perf` fails, it exits with code `1` and prints the exact offending metric(s) and route(s). Follow these diagnostic steps:
+
+1. **Home-Page JS Brotli Failure (> 100 KB):**
+   - Run `npx vite-bundle-visualizer` to identify which dependency or module was newly added to the entry chunk.
+   - Ensure dynamic dialogs/modals (e.g. `RequestAuditModal`) use `React.lazy()` with on-demand prefetching rather than static imports.
+   - Verify utility libraries are properly tree-shaken (e.g. `clsx` instead of `tailwind-merge`).
+
+2. **LCP Failure (> 2,500 ms):**
+   - Check if an above-the-fold element was wrapped in an entrance animation with `opacity: 0` or delayed mount.
+   - Verify self-hosted fonts (`dist/assets/*.woff2`) are properly preloaded in `<head>` and font-display is set to `swap`.
+   - Ensure heavy canvas animations (e.g. `AuroraBars`) remain deferred until after first paint via `requestAnimationFrame` post-mount.
+
+3. **CLS Failure (> 0.05):**
+   - Verify that `@font-face` rules in `theme.css` retain the fallback metric overrides (`size-adjust`, `ascent-override`, `descent-override`).
+   - Check for newly added images or banners missing explicit `width` and `height` attributes or aspect-ratio reservations.
+
+4. **TBT Failure (> 150 ms):**
+   - Inspect main-thread execution using Chrome DevTools Performance panel or Lighthouse trace (`--save-assets`).
+   - Look for synchronous work executed during hydration in `main.jsx` or top-level component render.
+
+5. **Quick Debugging / Targeted Route Runs:**
+   You can run targeted checks using environment variables:
+   ```bash
+   # Run 1 evaluation on Homepage only:
+   GUARDRAIL_SINGLE_ROUTE=1 GUARDRAIL_RUNS=1 node scripts/perf-guardrail.js
+   ```
+
