@@ -66,6 +66,7 @@ export default defineConfig({
 
   build: {
     target: 'es2020',
+    manifest: true,
     cssCodeSplit: true,
     chunkSizeWarningLimit: 600,
     rollupOptions: {
@@ -73,9 +74,6 @@ export default defineConfig({
         manualChunks(id) {
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
             return 'vendor-react';
-          }
-          if (id.includes('node_modules/motion')) {
-            return 'vendor-motion';
           }
         },
       },

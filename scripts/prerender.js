@@ -142,7 +142,38 @@ function findHashedFonts() {
   return [inter, jakarta].filter(Boolean);
 }
 
-function buildHtmlFromTemplate(templateHtml, rootInnerHtml, seo, breadcrumbJson, fontFiles) {
+function getRouteChunkPreload(routeKey) {
+  const manifestPath = path.join(distDir, ".vite/manifest.json");
+  if (!fs.existsSync(manifestPath)) return "";
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+
+  const keyToSrc = {
+    services: "src/pages/ServicesPage.jsx",
+    pricing: "src/pages/PricingPage.jsx",
+    cybersecurity: "src/pages/CybersecurityPage.jsx",
+    seo: "src/pages/SeoPage.jsx",
+    webdev: "src/pages/WebDevPage.jsx",
+    about: "src/pages/AboutPage.jsx",
+    404: "src/pages/NotFoundPage.jsx",
+  };
+
+  const src = keyToSrc[routeKey];
+  if (!src || !manifest[src]) return "";
+
+  const entry = manifest[src];
+  const tags = [];
+  if (entry.file) {
+    tags.push(`    <link rel="modulepreload" crossorigin href="/${entry.file}">`);
+  }
+  if (Array.isArray(entry.css)) {
+    for (const css of entry.css) {
+      tags.push(`    <link rel="stylesheet" href="/${css}">`);
+    }
+  }
+  return tags.join("\n");
+}
+
+function buildHtmlFromTemplate(templateHtml, rootInnerHtml, seo, breadcrumbJson, fontFiles, routeKey) {
   let html = templateHtml;
 
   // 1. Replace title
@@ -190,7 +221,13 @@ function buildHtmlFromTemplate(templateHtml, rootInnerHtml, seo, breadcrumbJson,
     html = html.replace("</head>", `${fontPreloads}\n  </head>`);
   }
 
-  // 6. Inject BreadcrumbList JSON-LD if applicable
+  // 6. Inject per-route chunk modulepreload into <head>
+  const chunkPreload = getRouteChunkPreload(routeKey);
+  if (chunkPreload) {
+    html = html.replace("</head>", `${chunkPreload}\n  </head>`);
+  }
+
+  // 7. Inject BreadcrumbList JSON-LD if applicable
   if (breadcrumbJson) {
     const breadcrumbTag = `    <script id="jsonld-breadcrumbs" type="application/ld+json">\n${JSON.stringify(
       breadcrumbJson,
@@ -200,7 +237,7 @@ function buildHtmlFromTemplate(templateHtml, rootInnerHtml, seo, breadcrumbJson,
     html = html.replace("</head>", `${breadcrumbTag}\n  </head>`);
   }
 
-  // 7. Inject pre-rendered #root content
+  // 8. Inject pre-rendered #root content
   html = html.replace(
     /<div id="root"><\/div>/,
     `<div id="root">${rootInnerHtml}</div>`
@@ -274,7 +311,7 @@ async function prerender() {
     const breadcrumbJson = getBreadcrumbJsonLd(route.key);
 
     // Build the clean HTML strictly from template (no mutated runtime head)
-    const finalHtml = buildHtmlFromTemplate(templateHtml, rootInnerHtml, seo, breadcrumbJson, fontFiles);
+    const finalHtml = buildHtmlFromTemplate(templateHtml, rootInnerHtml, seo, breadcrumbJson, fontFiles, route.key);
 
     const outputPath = path.join(distDir, route.output);
     const outputFolder = path.dirname(outputPath);

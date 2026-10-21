@@ -1,5 +1,3 @@
-import { motion } from "motion/react";
-
 export function Card({
   children,
   className = "",
@@ -16,18 +14,16 @@ export function Card({
     : "bg-card text-card-foreground shadow-xs";
 
   const hoverStyles = hover
-    ? "hover:border-primary/40 hover:shadow-[0_16px_36px_rgba(30,79,224,0.12)] cursor-pointer"
+    ? "hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_16px_36px_rgba(30,79,224,0.12)] cursor-pointer"
     : "";
 
   return (
-    <motion.div
-      whileHover={hover ? { y: -4 } : undefined}
-      transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+    <div
       className={`${baseStyles} ${glassStyles} ${hoverStyles} ${className}`}
       onClick={onClick}
       {...props}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { motion, useReducedMotion } from "motion/react";
 import { SERVICE_PACKAGES, CAPACITY_CONFIG } from "../data/servicePackages";
 import { CapacityGauge } from "../components/pricing/CapacityGauge";
 import { PackageCard } from "../components/pricing/PackageCard";
@@ -12,7 +11,6 @@ export default function PricingPage({
   onRequestAudit,
   highlightedPackageId = null,
 }) {
-  const prefersReducedMotion = useReducedMotion();
 
   // Phase 8: Set page title dynamically
   useEffect(() => {

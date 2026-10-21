@@ -1,20 +1,20 @@
-import { useState, useEffect, lazy, Suspense } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import HomePage from "../pages/HomePage";
 import { RequestAuditModal } from "../components/ui/RequestAuditModal";
 import { isValidPackageId } from "../data/servicePackages";
 import { applySeoToDom } from "../lib/seo";
+import { loadedComponents, preloadRouteChunk } from "../lib/routes";
 
-// Lazy-load secondary pages for code splitting & fast initial load
-const ServicesPage = lazy(() => import("../pages/ServicesPage"));
-const PricingPage = lazy(() => import("../pages/PricingPage"));
-const CybersecurityPage = lazy(() => import("../pages/CybersecurityPage"));
-const SeoPage = lazy(() => import("../pages/SeoPage"));
-const WebDevPage = lazy(() => import("../pages/WebDevPage"));
-const AboutPage = lazy(() => import("../pages/AboutPage"));
-const NotFoundPage = lazy(() => import("../pages/NotFoundPage"));
+// Fallback lazy loaders for client-side navigation if not preloaded in memory
+const LazyServicesPage = lazy(() => import("../pages/ServicesPage"));
+const LazyPricingPage = lazy(() => import("../pages/PricingPage"));
+const LazyCybersecurityPage = lazy(() => import("../pages/CybersecurityPage"));
+const LazySeoPage = lazy(() => import("../pages/SeoPage"));
+const LazyWebDevPage = lazy(() => import("../pages/WebDevPage"));
+const LazyAboutPage = lazy(() => import("../pages/AboutPage"));
+const LazyNotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 
 // Premium Top Progress Bar (Vercel / GitHub style)
 function TopProgressBar({ isNavigating }) {
@@ -83,14 +83,13 @@ export default function App() {
   const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
   const [selectedPackageId, setSelectedPackageId] = useState(null);
   const [highlightedPackageId, setHighlightedPackageId] = useState(null);
-  const prefersReducedMotion = useReducedMotion();
 
   // Synchronize SEO metadata to DOM whenever activePage changes
   useEffect(() => {
     applySeoToDom(activePage);
   }, [activePage]);
 
-  // Phase 4: Zero-dependency URL path and query param synchronization
+  // URL path and query param synchronization
   useEffect(() => {
     const syncFromLocation = () => {
       const pathname = window.location.pathname.replace(/^\/+|\/+$/g, "");
@@ -121,6 +120,9 @@ export default function App() {
 
   const handleNavigate = (page, packageId = null) => {
     if (page === activePage && !packageId) return;
+
+    // Preload target page chunk immediately
+    preloadRouteChunk(page);
 
     setIsNavigating(true);
     setActivePage(page);
@@ -156,6 +158,15 @@ export default function App() {
   const knownPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about"];
   const is404 = !knownPages.includes(activePage);
 
+  // Synchronous component resolution: If already preloaded into memory, renders synchronously without Suspense!
+  const ServicesComp = loadedComponents.services || LazyServicesPage;
+  const PricingComp = loadedComponents.pricing || LazyPricingPage;
+  const CybersecurityComp = loadedComponents.cybersecurity || LazyCybersecurityPage;
+  const SeoComp = loadedComponents.seo || LazySeoPage;
+  const WebDevComp = loadedComponents.webdev || LazyWebDevPage;
+  const AboutComp = loadedComponents.about || LazyAboutPage;
+  const NotFoundComp = loadedComponents["404"] || LazyNotFoundPage;
+
   return (
     <div className="w-full min-h-screen bg-background text-slate-900 selection:bg-blue-500/15 selection:text-blue-700">
       {/* Top Animated Progress Bar */}
@@ -168,77 +179,70 @@ export default function App() {
         onRequestAudit={() => handleOpenAuditModal(null)}
       />
 
-      {/* Page Content with Smooth Transition */}
+      {/* Page Content with Smooth Pure CSS Transition */}
       <main className="pt-14 md:pt-16">
         <Suspense fallback={<PageLoader />}>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={activePage}
-              initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
-              transition={{ duration: 0.25, ease: [0.2, 0.8, 0.2, 1] }}
-            >
-              {activePage === "home" && (
-                <HomePage
-                  onNavigate={handleNavigate}
-                  onRequestAudit={() => handleOpenAuditModal(null)}
-                />
-              )}
-              {activePage === "services" && (
-                <ServicesPage
-                  onNavigate={handleNavigate}
-                  onRequestAudit={() => handleOpenAuditModal(null)}
-                />
-              )}
-              {activePage === "pricing" && (
-                <PricingPage
-                  onNavigate={handleNavigate}
-                  onRequestAudit={handleOpenAuditModal}
-                  highlightedPackageId={highlightedPackageId}
-                />
-              )}
-              {activePage === "cybersecurity" && (
-                <CybersecurityPage
-                  onNavigate={handleNavigate}
-                  onRequestAudit={() => handleOpenAuditModal(null)}
-                />
-              )}
-              {activePage === "seo" && (
-                <SeoPage
-                  onNavigate={handleNavigate}
-                  onRequestAudit={() => handleOpenAuditModal(null)}
-                />
-              )}
-              {activePage === "webdev" && (
-                <WebDevPage
-                  onNavigate={handleNavigate}
-                  onRequestAudit={() => handleOpenAuditModal(null)}
-                />
-              )}
-              {activePage === "about" && (
-                <AboutPage
-                  onNavigate={handleNavigate}
-                  onRequestAudit={() => handleOpenAuditModal(null)}
-                />
-              )}
-              {is404 && <NotFoundPage onNavigate={handleNavigate} />}
-            </motion.div>
-          </AnimatePresence>
+          <div key={activePage} className="animate-page-enter">
+            {activePage === "home" && (
+              <HomePage
+                onNavigate={handleNavigate}
+                onRequestAudit={() => handleOpenAuditModal(null)}
+              />
+            )}
+            {activePage === "services" && (
+              <ServicesComp
+                onNavigate={handleNavigate}
+                onRequestAudit={() => handleOpenAuditModal(null)}
+              />
+            )}
+            {activePage === "pricing" && (
+              <PricingComp
+                onNavigate={handleNavigate}
+                onRequestAudit={handleOpenAuditModal}
+                highlightedPackageId={highlightedPackageId}
+              />
+            )}
+            {activePage === "cybersecurity" && (
+              <CybersecurityComp
+                onNavigate={handleNavigate}
+                onRequestAudit={() => handleOpenAuditModal(null)}
+              />
+            )}
+            {activePage === "seo" && (
+              <SeoComp
+                onNavigate={handleNavigate}
+                onRequestAudit={() => handleOpenAuditModal(null)}
+              />
+            )}
+            {activePage === "webdev" && (
+              <WebDevComp
+                onNavigate={handleNavigate}
+                onRequestAudit={() => handleOpenAuditModal(null)}
+              />
+            )}
+            {activePage === "about" && (
+              <AboutComp
+                onNavigate={handleNavigate}
+                onRequestAudit={() => handleOpenAuditModal(null)}
+              />
+            )}
+            {is404 && <NotFoundComp onNavigate={handleNavigate} />}
+          </div>
         </Suspense>
       </main>
 
-      {/* Single Shared Footer */}
+      {/* Shared Footer */}
       <Footer
         onNavigate={handleNavigate}
         onRequestAudit={() => handleOpenAuditModal(null)}
       />
 
-      {/* Shared Interactive Request Audit Modal */}
+      {/* Audit Request Modal Dialog */}
       <RequestAuditModal
         isOpen={isAuditModalOpen}
         onClose={handleCloseAuditModal}
-        selectedPackageId={selectedPackageId}
+        preselectedPackageId={selectedPackageId}
+        onNavigate={handleNavigate}
       />
     </div>
   );

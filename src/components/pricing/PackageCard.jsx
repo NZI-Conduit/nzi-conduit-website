@@ -1,6 +1,5 @@
 import Icon from "../ui/Icon";
 import { useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
 import { Button } from "../ui/Button";
 
 // Number of included scope items shown initially
@@ -14,7 +13,6 @@ export function PackageCard({
 }) {
   const [isAddonsOpen, setIsAddonsOpen] = useState(false);
   const [isScopeExpanded, setIsScopeExpanded] = useState(false);
-  const prefersReducedMotion = useReducedMotion();
 
   if (!packageData) return null;
 

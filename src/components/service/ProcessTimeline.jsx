@@ -1,9 +1,7 @@
 import Icon from "../ui/Icon";
-import { motion, useReducedMotion } from "motion/react";
 import { Badge } from "../ui/Badge";
 
 export function ProcessTimeline({ badgeText = "Workflow", title, description, steps = [] }) {
-  const prefersReducedMotion = useReducedMotion();
 
   return (
     <section className="w-full py-section-py bg-white border-y border-outline-variant/10 relative overflow-hidden">

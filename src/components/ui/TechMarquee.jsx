@@ -1,5 +1,5 @@
 import Icon from "./Icon";
-import { useReducedMotion } from "motion/react";
+import { useReducedMotion } from "../../lib/useReducedMotion";
 
 export function TechMarquee() {
   const prefersReducedMotion = useReducedMotion();

@@ -1,10 +1,8 @@
 import Icon from "../ui/Icon";
-import { motion, useReducedMotion } from "motion/react";
 import { Card } from "../ui/Card";
 import { Badge } from "../ui/Badge";
 
 export function FeatureGrid({ badgeText = "Capabilities", title, description, features = [] }) {
-  const prefersReducedMotion = useReducedMotion();
 
   return (
     <section className="w-full py-section-py bg-gradient-to-b from-[#F5F9FF] via-white to-[#F0F6FE] bg-ambient-mesh border-y border-blue-100/60 relative overflow-hidden">

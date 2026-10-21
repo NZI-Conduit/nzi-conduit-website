@@ -1,6 +1,5 @@
 import Icon from "../components/ui/Icon";
 import { useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
 import { AuroraBars } from "../components/aurora-bars";
 import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
@@ -8,7 +7,6 @@ import { Card } from "../components/ui/Card";
 import { TechMarquee } from "../components/ui/TechMarquee";
 
 export default function HomePage({ onNavigate, onRequestAudit }) {
-  const prefersReducedMotion = useReducedMotion();
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
 
   const faqs = [

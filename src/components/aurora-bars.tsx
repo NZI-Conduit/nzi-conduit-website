@@ -1,9 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion, useAnimationFrame, useReducedMotion } from "motion/react";
-
-import { cn } from "@/lib/utils";
+import { useReducedMotion } from "../lib/useReducedMotion";
 
 export interface AuroraBarsProps {
   /** @default 24 */
@@ -20,7 +18,7 @@ export interface AuroraBarsProps {
   gap?: number;
   /** px blur per bar, creates soft glow — @default 0 */
   blur?: number;
-  /** @default "#000000" */
+  /** @default "#FFFFFF" */
   background?: string;
   showVignette?: boolean;
   /** Custom vignette overlay color — @default "rgba(113, 42, 226, 0.15)" */
@@ -28,17 +26,15 @@ export interface AuroraBarsProps {
   className?: string;
 }
 
-/** two sine waves per bar for organic movement */
+/** Two sine waves per bar for organic movement */
 function barHeight(
   index: number,
   total: number,
   time: number,
   minH: number,
-  maxH: number,
+  maxH: number
 ): number {
-  // Arch envelope: tallest in the centre, shorter on edges
-  // arch envelope: tallest in centre, shorter on edges
-  const norm = index / (total - 1);
+  const norm = index / (total - 1 || 1);
   const arch = Math.sin(norm * Math.PI);
 
   const phase1 = (index / total) * Math.PI * 2;
@@ -50,7 +46,6 @@ function barHeight(
     0.25 * Math.sin(time * 0.7 + phase2);
 
   const blended = arch * 0.65 + wave * 0.35;
-
   return minH + blended * (maxH - minH);
 }
 
@@ -65,15 +60,35 @@ export function AuroraBars({
   background = "#FFFFFF",
   showVignette = false,
   vignetteColor = "rgba(113, 42, 226, 0.15)",
-  className,
+  className = "",
 }: AuroraBarsProps) {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const barRefs = React.useRef<(HTMLDivElement | null)[]>([]);
   const timeRef = React.useRef(0);
   const [isInView, setIsInView] = React.useState(true);
+  const [isTabVisible, setIsTabVisible] = React.useState(true);
+  const [isReadyToAnimate, setIsReadyToAnimate] = React.useState(false);
   const prefersReducedMotion = useReducedMotion();
 
-  // Performance: Pause animation loop when scrolled out of viewport
+  // Responsive bar count (cut in half on mobile to preserve main-thread performance)
+  const [activeBarCount, setActiveBarCount] = React.useState(barCount);
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      setActiveBarCount(window.innerWidth < 768 ? Math.min(barCount, 18) : barCount);
+    }
+  }, [barCount]);
+
+  // Performance: Pause when tab is inactive
+  React.useEffect(() => {
+    if (typeof document === "undefined") return;
+    const handleVisibility = () => {
+      setIsTabVisible(document.visibilityState !== "hidden");
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, []);
+
+  // Performance: Pause when scrolled out of view
   React.useEffect(() => {
     const el = containerRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
@@ -89,34 +104,78 @@ export function AuroraBars({
     return () => observer.disconnect();
   }, []);
 
-  // Directly update DOM element styles in animation frame without triggering React state re-renders
-  useAnimationFrame((_, delta) => {
-    if (!isInView || prefersReducedMotion) return;
-    timeRef.current += (delta / 1000) * speed;
-    const t = timeRef.current;
-    for (let i = 0; i < barCount; i++) {
-      const el = barRefs.current[i];
-      if (el) {
-        const h = barHeight(i, barCount, t, minHeightRatio, maxHeightRatio);
-        el.style.height = `${h * 100}%`;
+  // Defer animation loop until AFTER window load & first paint/LCP
+  React.useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    let cancelTimer: (() => void) | null = null;
+    const scheduleStart = () => {
+      if ("requestIdleCallback" in window) {
+        const handle = (window as any).requestIdleCallback(() => setIsReadyToAnimate(true), { timeout: 1500 });
+        cancelTimer = () => (window as any).cancelIdleCallback(handle);
+      } else {
+        const timer = setTimeout(() => setIsReadyToAnimate(true), 800);
+        cancelTimer = () => clearTimeout(timer);
       }
+    };
+
+    if (document.readyState === "complete") {
+      scheduleStart();
+    } else {
+      window.addEventListener("load", scheduleStart, { once: true });
     }
-  });
+
+    return () => {
+      cancelTimer?.();
+    };
+  }, [prefersReducedMotion]);
+
+  // Main animation loop: Pure requestAnimationFrame (Zero motion runtime dependency)
+  React.useEffect(() => {
+    if (!isReadyToAnimate || !isInView || !isTabVisible || prefersReducedMotion) return;
+
+    let rafId: number;
+    let lastTime = performance.now();
+
+    const renderLoop = (now: number) => {
+      const delta = (now - lastTime) / 1000;
+      lastTime = now;
+      timeRef.current += delta * speed;
+      const t = timeRef.current;
+
+      for (let i = 0; i < activeBarCount; i++) {
+        const el = barRefs.current[i];
+        if (el) {
+          const h = barHeight(i, activeBarCount, t, minHeightRatio, maxHeightRatio);
+          el.style.height = `${h * 100}%`;
+        }
+      }
+
+      rafId = requestAnimationFrame(renderLoop);
+    };
+
+    rafId = requestAnimationFrame(renderLoop);
+    return () => cancelAnimationFrame(rafId);
+  }, [isReadyToAnimate, isInView, isTabVisible, prefersReducedMotion, activeBarCount, speed, minHeightRatio, maxHeightRatio]);
 
   const gradientStop = colors
-    .map((c, i) => `${c} ${Math.round((i / (colors.length - 1)) * 100)}%`)
+    .map((c, i) => `${c} ${Math.round((i / (colors.length - 1 || 1)) * 100)}%`)
     .join(", ");
   const gradient = `linear-gradient(to top, ${gradientStop})`;
 
   return (
     <div
       ref={containerRef}
-      className={cn("relative w-full h-full overflow-hidden", className)}
-      style={{ background }}
+      aria-hidden="true"
+      className={`relative w-full h-full overflow-hidden pointer-events-none select-none ${className}`}
+      style={{
+        background,
+        backgroundImage: "radial-gradient(ellipse at 50% 100%, rgba(37,99,235,0.08) 0%, transparent 70%)",
+      }}
     >
-      <div className="absolute inset-0 flex items-end">
-        {Array.from({ length: barCount }).map((_, i) => {
-          const initialH = barHeight(i, barCount, 0, minHeightRatio, maxHeightRatio);
+      <div className="absolute inset-0 flex items-end" suppressHydrationWarning>
+        {Array.from({ length: activeBarCount }).map((_, i) => {
+          const initialH = barHeight(i, activeBarCount, 0, minHeightRatio, maxHeightRatio);
           return (
             <div
               key={i}
@@ -139,7 +198,7 @@ export function AuroraBars({
                   borderRadius: "9999px 9999px 0 0",
                   filter: blur > 0 ? `blur(${blur}px)` : undefined,
                   opacity: 0.85,
-                  willChange: isInView && !prefersReducedMotion ? "height" : "auto",
+                  willChange: isReadyToAnimate && isInView && !prefersReducedMotion ? "height" : "auto",
                 }}
               />
             </div>

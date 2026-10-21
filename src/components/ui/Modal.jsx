@@ -1,8 +1,10 @@
 import Icon from "./Icon";
-import { useEffect, useRef, useId } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
+import { useEffect, useRef, useState, useId } from "react";
+import { useReducedMotion } from "../../lib/useReducedMotion";
 
 export function Modal({ isOpen, onClose, title, subtitle, children, maxWidth = "max-w-xl" }) {
+  const [isMounted, setIsMounted] = useState(isOpen);
+  const [dataState, setDataState] = useState(isOpen ? "open" : "closed");
   const modalRef = useRef(null);
   const previousActiveElement = useRef(null);
   const titleId = useId();
@@ -14,9 +16,30 @@ export function Modal({ isOpen, onClose, title, subtitle, children, maxWidth = "
     onCloseRef.current = onClose;
   }, [onClose]);
 
-  // Focus trap, ESC listener, and focus restoration
+  // Handle CSS enter/exit transitions with unmount delay
   useEffect(() => {
-    if (!isOpen) return;
+    if (isOpen) {
+      setIsMounted(true);
+      // Wait for next paint to trigger CSS transition
+      const frame = requestAnimationFrame(() => {
+        setDataState("open");
+      });
+      return () => cancelAnimationFrame(frame);
+    } else {
+      setDataState("closed");
+      const timer = setTimeout(
+        () => {
+          setIsMounted(false);
+        },
+        prefersReducedMotion ? 0 : 200
+      );
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, prefersReducedMotion]);
+
+  // Focus trap, ESC listener, body scroll lock, and focus restoration
+  useEffect(() => {
+    if (!isMounted) return;
 
     previousActiveElement.current = document.activeElement;
 
@@ -77,74 +100,66 @@ export function Modal({ isOpen, onClose, title, subtitle, children, maxWidth = "
         previousActiveElement.current.focus();
       }
     };
-  }, [isOpen]);
+  }, [isMounted]);
+
+  if (!isMounted) return null;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby={title ? titleId : undefined}
-          aria-describedby={subtitle ? subtitleId : undefined}
-        >
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.2 }}
-            onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-md"
-          />
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={title ? titleId : undefined}
+      aria-describedby={subtitle ? subtitleId : undefined}
+    >
+      {/* Backdrop */}
+      <div
+        data-state={dataState}
+        onClick={onClose}
+        className="modal-backdrop fixed inset-0 bg-black/60 backdrop-blur-md cursor-pointer"
+      />
 
-          {/* Modal Card */}
-          <motion.div
-            ref={modalRef}
-            tabIndex={-1}
-            initial={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 12 }}
-            animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
-            exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 12 }}
-            transition={{ type: "spring", stiffness: 450, damping: 30 }}
-            className={`relative w-full ${maxWidth} max-h-[90vh] bg-surface border border-outline-variant/20 rounded-3xl shadow-2xl p-5 sm:p-8 z-10 flex flex-col focus:outline-none my-auto`}
-          >
-            {/* Modal Header */}
-            <div className="flex items-start justify-between gap-4 pb-4 border-b border-outline-variant/10 shrink-0">
-              <div className="text-left">
-                {title && (
-                  <h3
-                    id={titleId}
-                    className="font-headline-md text-lg sm:text-2xl font-bold text-on-surface tracking-tight"
-                  >
-                    {title}
-                  </h3>
-                )}
-                {subtitle && (
-                  <p
-                    id={subtitleId}
-                    className="font-body text-xs sm:text-sm text-on-surface-variant mt-1"
-                  >
-                    {subtitle}
-                  </p>
-                )}
-              </div>
-              <button
-                onClick={onClose}
-                className="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/40 rounded-full transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none shrink-0"
-                aria-label="Close dialog"
+      {/* Modal Card */}
+      <div
+        ref={modalRef}
+        tabIndex={-1}
+        data-state={dataState}
+        className={`modal-content relative w-full ${maxWidth} max-h-[90vh] bg-surface border border-outline-variant/20 rounded-3xl shadow-2xl p-5 sm:p-8 z-10 flex flex-col focus:outline-none my-auto`}
+      >
+        {/* Modal Header */}
+        <div className="flex items-start justify-between gap-4 pb-4 border-b border-outline-variant/10 shrink-0">
+          <div className="text-left">
+            {title && (
+              <h3
+                id={titleId}
+                className="font-headline-md text-lg sm:text-2xl font-bold text-on-surface tracking-tight"
               >
-                <Icon name="close" size={20} />
-              </button>
-            </div>
-
-            {/* Scrollable Content Body */}
-            <div className="overflow-y-auto pt-4 pr-1 text-left flex-1">
-              {children}
-            </div>
-          </motion.div>
+                {title}
+              </h3>
+            )}
+            {subtitle && (
+              <p
+                id={subtitleId}
+                className="font-body text-xs sm:text-sm text-on-surface-variant mt-1"
+              >
+                {subtitle}
+              </p>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-variant/40 rounded-full transition-colors min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none shrink-0"
+            aria-label="Close dialog"
+          >
+            <Icon name="close" size={20} />
+          </button>
         </div>
-      )}
-    </AnimatePresence>
+
+        {/* Scrollable Content Body */}
+        <div className="overflow-y-auto pt-4 pr-1 text-left flex-1">
+          {children}
+        </div>
+      </div>
+    </div>
   );
 }
