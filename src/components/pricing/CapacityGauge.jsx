@@ -1,5 +1,6 @@
 import Icon from "../ui/Icon";
 import { CAPACITY_CONFIG } from "../../data/servicePackages";
+import { prefetchAuditModal } from "../../lib/modalPrefetch";
 
 export function CapacityGauge({ onDiscussOpening = null, className = "" }) {
   const { totalSlots, filledSlots, openSlots, headline, subtext } = CAPACITY_CONFIG;
@@ -48,6 +49,9 @@ export function CapacityGauge({ onDiscussOpening = null, className = "" }) {
           <button
             type="button"
             onClick={onDiscussOpening}
+            onMouseEnter={prefetchAuditModal}
+            onFocus={prefetchAuditModal}
+            onTouchStart={prefetchAuditModal}
             className="shrink-0 px-4 py-2 rounded-xl bg-blue-50 text-primary border border-blue-200 hover:bg-blue-100 font-label text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <span>Discuss This Opening</span>

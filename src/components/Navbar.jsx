@@ -2,6 +2,7 @@ import Icon from "./ui/Icon";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/Button";
 import { prefetchPage } from "../lib/prefetch";
+import { prefetchAuditModal } from "../lib/modalPrefetch";
 
 export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
   const [isServicesOpen, setIsServicesOpen] = useState(false);
@@ -226,7 +227,14 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
-            <Button size="sm" onClick={handleAuditClick} icon="bolt">
+            <Button
+              size="sm"
+              onClick={handleAuditClick}
+              onMouseEnter={prefetchAuditModal}
+              onFocus={prefetchAuditModal}
+              onTouchStart={prefetchAuditModal}
+              icon="bolt"
+            >
               Request Audit
             </Button>
           </div>
@@ -394,7 +402,15 @@ export default function Navbar({ activePage, onNavigate, onRequestAudit }) {
 
         {/* Drawer Footer CTA */}
         <div className="px-6 py-6 border-t border-outline-variant/20 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
-          <Button size="lg" className="w-full" onClick={handleAuditClick} icon="bolt">
+          <Button
+            size="lg"
+            className="w-full"
+            onClick={handleAuditClick}
+            onMouseEnter={prefetchAuditModal}
+            onFocus={prefetchAuditModal}
+            onTouchStart={prefetchAuditModal}
+            icon="bolt"
+          >
             Request Audit
           </Button>
         </div>

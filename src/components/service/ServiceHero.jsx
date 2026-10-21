@@ -1,5 +1,6 @@
 import { Button } from "../ui/Button";
 import { Badge } from "../ui/Badge";
+import { prefetchAuditModal } from "../../lib/modalPrefetch";
 
 export function ServiceHero({
   badgeText,
@@ -21,7 +22,8 @@ export function ServiceHero({
         </Badge>
 
         <h1 className="font-hero-lg text-4xl sm:text-5xl lg:text-6xl text-on-surface font-extrabold max-w-[900px] leading-[1.12] tracking-[-0.03em] [text-wrap:balance]">
-          {title} <span className="text-gradient">{gradientTitle}</span>
+          <span>{`${title} `}</span>
+          <span className="text-gradient">{gradientTitle}</span>
         </h1>
 
         <p className="font-body-lg text-slate-800 font-medium max-w-[65ch] text-lg sm:text-xl leading-relaxed [text-wrap:pretty]">
@@ -29,7 +31,15 @@ export function ServiceHero({
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto pt-4">
-          <Button size="lg" variant="primary" onClick={onRequestAudit} icon="bolt">
+          <Button
+            size="lg"
+            variant="primary"
+            onClick={onRequestAudit}
+            onMouseEnter={prefetchAuditModal}
+            onFocus={prefetchAuditModal}
+            onTouchStart={prefetchAuditModal}
+            icon="bolt"
+          >
             Request Free Audit
           </Button>
           {secondaryCtaText && (

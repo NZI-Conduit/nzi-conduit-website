@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "./ui/Button";
 import { COMPANY_DETAILS } from "../lib/constants";
 import { prefetchPage } from "../lib/prefetch";
+import { prefetchAuditModal } from "../lib/modalPrefetch";
 
 export default function Footer({ onNavigate, onRequestAudit }) {
   const [newsletterEmail, setNewsletterEmail] = useState("");
@@ -214,6 +215,9 @@ export default function Footer({ onNavigate, onRequestAudit }) {
               <li>
                 <button
                   onClick={onRequestAudit}
+                  onMouseEnter={prefetchAuditModal}
+                  onFocus={prefetchAuditModal}
+                  onTouchStart={prefetchAuditModal}
                   className="hover:text-white hover:translate-x-1 transition-all duration-200 cursor-pointer text-left inline-block"
                 >
                   Free Technical Audit
@@ -242,6 +246,9 @@ export default function Footer({ onNavigate, onRequestAudit }) {
               <li>
                 <button
                   onClick={onRequestAudit}
+                  onMouseEnter={prefetchAuditModal}
+                  onFocus={prefetchAuditModal}
+                  onTouchStart={prefetchAuditModal}
                   className="group hover:text-white transition-colors cursor-pointer text-left flex items-center gap-1 text-blue-400"
                 >
                   <span>Request Audit</span>
@@ -305,9 +312,9 @@ export default function Footer({ onNavigate, onRequestAudit }) {
                   className="hover:text-white transition-colors text-slate-300 leading-relaxed"
                   title="View Office Location on Google Maps"
                 >
-                  {COMPANY_DETAILS.address.street}
+                  <span>{COMPANY_DETAILS.address.street}</span>
                   <br />
-                  {COMPANY_DETAILS.address.city}, {COMPANY_DETAILS.address.state} {COMPANY_DETAILS.address.zip}
+                  <span>{`${COMPANY_DETAILS.address.city}, ${COMPANY_DETAILS.address.state} ${COMPANY_DETAILS.address.zip}`}</span>
                 </a>
               </li>
               <li className="flex items-center gap-3">

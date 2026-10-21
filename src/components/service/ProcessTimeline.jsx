@@ -26,7 +26,7 @@ export function ProcessTimeline({ badgeText = "Workflow", title, description, st
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <span className="w-10 h-10 rounded-xl bg-primary text-on-primary font-label text-sm font-bold flex items-center justify-center shadow-sm transition-transform duration-200 ease-out group-hover:scale-110">
-                    0{i + 1}
+                    {`0${i + 1}`}
                   </span>
                   <Icon name="arrow_forward" size={20} className="text-on-surface-variant/40 group-hover:text-primary group-hover:translate-x-1 transition-all duration-200" />
                 </div>

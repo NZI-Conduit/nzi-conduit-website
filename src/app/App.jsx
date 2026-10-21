@@ -1,11 +1,12 @@
-import { useState, useEffect, Suspense, lazy } from "react";
+import { useState, useEffect, Suspense, lazy, startTransition } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import HomePage from "../pages/HomePage";
-import { RequestAuditModal } from "../components/ui/RequestAuditModal";
 import { isValidPackageId } from "../data/servicePackages";
 import { applySeoToDom } from "../lib/seo";
 import { loadedComponents, preloadRouteChunk } from "../lib/routes";
+
+const LazyRequestAuditModal = lazy(() => import("../components/ui/RequestAuditModal"));
 
 // Fallback lazy loaders for client-side navigation if not preloaded in memory
 const LazyServicesPage = lazy(() => import("../pages/ServicesPage"));
@@ -30,11 +31,13 @@ function TopProgressBar({ isNavigating }) {
         clearTimeout(timer2);
       };
     } else {
-      setProgress(100);
-      const resetTimer = setTimeout(() => setProgress(0), 200);
-      return () => clearTimeout(resetTimer);
+      if (progress > 0) {
+        setProgress(100);
+        const resetTimer = setTimeout(() => setProgress(0), 200);
+        return () => clearTimeout(resetTimer);
+      }
     }
-  }, [isNavigating]);
+  }, [isNavigating, progress]);
 
   if (progress === 0) return null;
 
@@ -101,9 +104,23 @@ export default function App() {
       const validPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about"];
 
       if (validPages.includes(resolvedPage)) {
-        setActivePage(resolvedPage);
+        if (resolvedPage === "home" || loadedComponents[resolvedPage]) {
+          startTransition(() => {
+            setActivePage(resolvedPage);
+          });
+        } else {
+          setIsNavigating(true);
+          preloadRouteChunk(resolvedPage).finally(() => {
+            startTransition(() => {
+              setActivePage(resolvedPage);
+              setIsNavigating(false);
+            });
+          });
+        }
       } else if (pathname) {
-        setActivePage("404");
+        startTransition(() => {
+          setActivePage("404");
+        });
       }
 
       if (packageParam && isValidPackageId(packageParam)) {
@@ -121,11 +138,7 @@ export default function App() {
   const handleNavigate = (page, packageId = null) => {
     if (page === activePage && !packageId) return;
 
-    // Preload target page chunk immediately
-    preloadRouteChunk(page);
-
     setIsNavigating(true);
-    setActivePage(page);
 
     if (packageId && isValidPackageId(packageId)) {
       setHighlightedPackageId(packageId);
@@ -137,9 +150,30 @@ export default function App() {
     window.history.pushState({}, "", `${newPath}${newSearch}`);
     applySeoToDom(page);
 
+    // Resolve component chunk BEFORE switching activePage to ensure zero PageLoader flash
+    if (page === "home" || loadedComponents[page]) {
+      startTransition(() => {
+        setActivePage(page);
+        setIsNavigating(false);
+      });
+    } else {
+      preloadRouteChunk(page).finally(() => {
+        startTransition(() => {
+          setActivePage(page);
+          setIsNavigating(false);
+        });
+      });
+    }
+
     window.scrollTo({ top: 0, behavior: "instant" });
-    setTimeout(() => setIsNavigating(false), 300);
   };
+
+  useEffect(() => {
+    window.__navigate = handleNavigate;
+    return () => {
+      delete window.__navigate;
+    };
+  }, [handleNavigate]);
 
   const handleOpenAuditModal = (packageId = null) => {
     if (packageId && isValidPackageId(packageId)) {
@@ -181,54 +215,108 @@ export default function App() {
 
       {/* Page Content with Smooth Pure CSS Transition */}
       <main className="pt-14 md:pt-16">
-        <Suspense fallback={<PageLoader />}>
-          <div key={activePage} className="animate-page-enter">
-            {activePage === "home" && (
-              <HomePage
-                onNavigate={handleNavigate}
-                onRequestAudit={() => handleOpenAuditModal(null)}
-              />
-            )}
-            {activePage === "services" && (
+        <div key={activePage} className="animate-page-enter">
+          {activePage === "home" && (
+            <HomePage
+              onNavigate={handleNavigate}
+              onRequestAudit={() => handleOpenAuditModal(null)}
+            />
+          )}
+          {activePage === "services" &&
+            (loadedComponents.services ? (
               <ServicesComp
                 onNavigate={handleNavigate}
                 onRequestAudit={() => handleOpenAuditModal(null)}
               />
-            )}
-            {activePage === "pricing" && (
+            ) : (
+              <Suspense fallback={<PageLoader />}>
+                <LazyServicesPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
+              </Suspense>
+            ))}
+          {activePage === "pricing" &&
+            (loadedComponents.pricing ? (
               <PricingComp
                 onNavigate={handleNavigate}
                 onRequestAudit={handleOpenAuditModal}
                 highlightedPackageId={highlightedPackageId}
               />
-            )}
-            {activePage === "cybersecurity" && (
+            ) : (
+              <Suspense fallback={<PageLoader />}>
+                <LazyPricingPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={handleOpenAuditModal}
+                  highlightedPackageId={highlightedPackageId}
+                />
+              </Suspense>
+            ))}
+          {activePage === "cybersecurity" &&
+            (loadedComponents.cybersecurity ? (
               <CybersecurityComp
                 onNavigate={handleNavigate}
                 onRequestAudit={() => handleOpenAuditModal(null)}
               />
-            )}
-            {activePage === "seo" && (
+            ) : (
+              <Suspense fallback={<PageLoader />}>
+                <LazyCybersecurityPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
+              </Suspense>
+            ))}
+          {activePage === "seo" &&
+            (loadedComponents.seo ? (
               <SeoComp
                 onNavigate={handleNavigate}
                 onRequestAudit={() => handleOpenAuditModal(null)}
               />
-            )}
-            {activePage === "webdev" && (
+            ) : (
+              <Suspense fallback={<PageLoader />}>
+                <LazySeoPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
+              </Suspense>
+            ))}
+          {activePage === "webdev" &&
+            (loadedComponents.webdev ? (
               <WebDevComp
                 onNavigate={handleNavigate}
                 onRequestAudit={() => handleOpenAuditModal(null)}
               />
-            )}
-            {activePage === "about" && (
+            ) : (
+              <Suspense fallback={<PageLoader />}>
+                <LazyWebDevPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
+              </Suspense>
+            ))}
+          {activePage === "about" &&
+            (loadedComponents.about ? (
               <AboutComp
                 onNavigate={handleNavigate}
                 onRequestAudit={() => handleOpenAuditModal(null)}
               />
-            )}
-            {is404 && <NotFoundComp onNavigate={handleNavigate} />}
-          </div>
-        </Suspense>
+            ) : (
+              <Suspense fallback={<PageLoader />}>
+                <LazyAboutPage
+                  onNavigate={handleNavigate}
+                  onRequestAudit={() => handleOpenAuditModal(null)}
+                />
+              </Suspense>
+            ))}
+          {is404 &&
+            (loadedComponents["404"] ? (
+              <NotFoundComp onNavigate={handleNavigate} />
+            ) : (
+              <Suspense fallback={<PageLoader />}>
+                <LazyNotFoundPage onNavigate={handleNavigate} />
+              </Suspense>
+            ))}
+        </div>
       </main>
 
       {/* Shared Footer */}
@@ -237,13 +325,17 @@ export default function App() {
         onRequestAudit={() => handleOpenAuditModal(null)}
       />
 
-      {/* Audit Request Modal Dialog */}
-      <RequestAuditModal
-        isOpen={isAuditModalOpen}
-        onClose={handleCloseAuditModal}
-        preselectedPackageId={selectedPackageId}
-        onNavigate={handleNavigate}
-      />
+      {/* Audit Request Modal Dialog (Lazy-loaded with intent prefetch) */}
+      {isAuditModalOpen && (
+        <Suspense fallback={null}>
+          <LazyRequestAuditModal
+            isOpen={isAuditModalOpen}
+            onClose={handleCloseAuditModal}
+            selectedPackageId={selectedPackageId}
+            onNavigate={handleNavigate}
+          />
+        </Suspense>
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import Icon from "../ui/Icon";
 import { useState } from "react";
 import { Button } from "../ui/Button";
+import { prefetchAuditModal } from "../../lib/modalPrefetch";
 
 // Number of included scope items shown initially
 const INCLUDED_PREVIEW_COUNT = 4;
@@ -214,7 +215,7 @@ export function PackageCard({
             <Icon name="schedule" size={16} className="text-[#5B87A8] shrink-0 mt-0.5" />
             <span>
               <strong className="text-white font-mono font-semibold">Timeline: </strong>
-              {timeline}
+              <span>{timeline}</span>
             </span>
           </div>
           <div className="pl-6 text-[11px] text-[#5B87A8] border-l-2 border-[#5B87A8]/40">
@@ -233,7 +234,7 @@ export function PackageCard({
             >
               <span className="flex items-center gap-1.5">
                 <Icon name="tune" size={16} />
-                <span>Optional Add-Ons Menu ({addons.length})</span>
+                <span>{`Optional Add-Ons Menu (${addons.length})`}</span>
               </span>
               <Icon
                 name="expand_more"
@@ -270,6 +271,9 @@ export function PackageCard({
           size="md"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold"
           onClick={handleSelect}
+          onMouseEnter={prefetchAuditModal}
+          onFocus={prefetchAuditModal}
+          onTouchStart={prefetchAuditModal}
           icon="bolt"
         >
           Start Inquiry

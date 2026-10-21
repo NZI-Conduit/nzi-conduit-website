@@ -2,6 +2,7 @@ import Icon from "../ui/Icon";
 import { useState } from "react";
 import { Badge } from "../ui/Badge";
 import { Button } from "../ui/Button";
+import { prefetchAuditModal } from "../../lib/modalPrefetch";
 
 export function ServiceFaq({
   badgeText = "FAQ",
@@ -42,7 +43,16 @@ export function ServiceFaq({
                 <span>Response SLA: Guaranteed &lt; 24 Hours</span>
               </div>
               {onRequestAudit && (
-                <Button size="sm" variant="outline" onClick={onRequestAudit} icon="chat" className="w-full">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={onRequestAudit}
+                  onMouseEnter={prefetchAuditModal}
+                  onFocus={prefetchAuditModal}
+                  onTouchStart={prefetchAuditModal}
+                  icon="chat"
+                  className="w-full"
+                >
                   Ask an Engineer
                 </Button>
               )}

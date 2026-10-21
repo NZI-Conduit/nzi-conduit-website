@@ -1,4 +1,4 @@
-import { createRoot } from "react-dom/client";
+import { hydrateRoot } from "react-dom/client";
 import App from "./app/App.jsx";
 import { preloadRouteChunk } from "./lib/routes.js";
 import "./styles/index.css";
@@ -28,8 +28,11 @@ async function boot() {
   const rootElement = document.getElementById("root");
   if (!rootElement) return;
 
-  // Mount cleanly with pre-resolved components - no suspense, no blank frames
-  createRoot(rootElement).render(<App />);
+  hydrateRoot(rootElement, <App />, {
+    onRecoverableError(error, errorInfo) {
+      console.error("HYDRATION ERROR:", error?.message || error, errorInfo?.componentStack);
+    },
+  });
 }
 
 boot();

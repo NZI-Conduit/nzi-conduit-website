@@ -196,3 +196,5 @@ export function RequestAuditModal({ isOpen, onClose, selectedPackageId = null })
     </Modal>
   );
 }
+
+export default RequestAuditModal;

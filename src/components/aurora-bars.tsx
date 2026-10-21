@@ -107,6 +107,13 @@ export function AuroraBars({
   // Defer animation loop until AFTER window load & first paint/LCP
   React.useEffect(() => {
     if (prefersReducedMotion) return;
+    if (
+      typeof window !== "undefined" &&
+      ((window as any).__PRERENDER__ ||
+        (typeof navigator !== "undefined" && /HeadlessChrome|Prerender/i.test(navigator.userAgent)))
+    ) {
+      return;
+    }
 
     let cancelTimer: (() => void) | null = null;
     const scheduleStart = () => {
@@ -180,6 +187,7 @@ export function AuroraBars({
             <div
               key={i}
               className="flex-1"
+              suppressHydrationWarning
               style={{
                 height: "100%",
                 display: "flex",
@@ -191,9 +199,10 @@ export function AuroraBars({
                 ref={(el) => {
                   barRefs.current[i] = el;
                 }}
+                suppressHydrationWarning
                 style={{
                   width: "100%",
-                  height: `${initialH * 100}%`,
+                  height: `${Number((initialH * 100).toFixed(2))}%`,
                   background: gradient,
                   borderRadius: "9999px 9999px 0 0",
                   filter: blur > 0 ? `blur(${blur}px)` : undefined,

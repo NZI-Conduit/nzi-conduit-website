@@ -5,6 +5,8 @@ import { Button } from "../components/ui/Button";
 import { ServiceFaq } from "../components/service/ServiceFaq";
 import { ServiceCtaBanner } from "../components/service/ServiceCtaBanner";
 
+import { prefetchAuditModal } from "../lib/modalPrefetch";
+
 export default function AboutPage({ onNavigate, onRequestAudit }) {
   const principles = [
     {
@@ -105,7 +107,15 @@ export default function AboutPage({ onNavigate, onRequestAudit }) {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto pt-4">
-            <Button size="lg" variant="primary" onClick={onRequestAudit} icon="bolt">
+            <Button
+              size="lg"
+              variant="primary"
+              onClick={onRequestAudit}
+              onMouseEnter={prefetchAuditModal}
+              onFocus={prefetchAuditModal}
+              onTouchStart={prefetchAuditModal}
+              icon="bolt"
+            >
               Request Free Audit
             </Button>
             <Button size="lg" variant="outline" onClick={() => onNavigate("services")} icon="grid_view">

@@ -1,5 +1,6 @@
 import Icon from "../ui/Icon";
 import { Button } from "../ui/Button";
+import { prefetchAuditModal } from "../../lib/modalPrefetch";
 
 export function ServiceCtaBanner({
   title,
@@ -40,7 +41,15 @@ export function ServiceCtaBanner({
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-md w-full sm:w-auto pt-md justify-center">
-          <Button size="lg" variant="white" onClick={onRequestAudit} icon="bolt">
+          <Button
+            size="lg"
+            variant="white"
+            onClick={onRequestAudit}
+            onMouseEnter={prefetchAuditModal}
+            onFocus={prefetchAuditModal}
+            onTouchStart={prefetchAuditModal}
+            icon="bolt"
+          >
             Request Free Audit
           </Button>
           <Button

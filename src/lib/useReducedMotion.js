@@ -1,19 +1,18 @@
 import { useState, useEffect } from "react";
 
 /**
- * Lightweight, zero-dependency hook to detect prefers-reduced-motion
+ * Lightweight, zero-dependency hook to detect prefers-reduced-motion.
+ * Guaranteed to be deterministic on first render (returns false on first render to match SSR,
+ * then updates in useEffect).
  */
 export function useReducedMotion() {
-  const [prefersReduced, setPrefersReduced] = useState(() => {
-    if (typeof window !== "undefined" && window.matchMedia) {
-      return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    }
-    return false;
-  });
+  const [prefersReduced, setPrefersReduced] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined" || !window.matchMedia) return;
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReduced(mq.matches);
+
     const onChange = (e) => setPrefersReduced(e.matches);
 
     if (mq.addEventListener) {

@@ -5,6 +5,7 @@ import { Button } from "../components/ui/Button";
 import { Badge } from "../components/ui/Badge";
 import { Card } from "../components/ui/Card";
 import { TechMarquee } from "../components/ui/TechMarquee";
+import { prefetchAuditModal } from "../lib/modalPrefetch";
 
 export default function HomePage({ onNavigate, onRequestAudit }) {
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
@@ -77,12 +78,20 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
             <span className="text-gradient">Fit Your Individual Needs</span>
           </h1>
 
-          <p className="font-body-lg text-slate-800 font-medium max-w-[65ch] mx-auto text-lg md:text-xl leading-relaxed [text-wrap:pretty]">
+          <p id="hero-paragraph" className="font-body-lg text-slate-800 font-medium max-w-[65ch] mx-auto text-lg md:text-xl leading-relaxed [text-wrap:pretty]">
             NZI Conduit delivers enterprise-grade web development, search visibility, and cybersecurity auditing structured specifically for those largely excluded from legacy IT providers.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-md w-full sm:w-auto pt-md">
-            <Button size="lg" variant="primary" onClick={onRequestAudit} icon="bolt">
+            <Button
+              size="lg"
+              variant="primary"
+              onClick={onRequestAudit}
+              onMouseEnter={prefetchAuditModal}
+              onFocus={prefetchAuditModal}
+              onTouchStart={prefetchAuditModal}
+              icon="bolt"
+            >
               Request Free Audit
             </Button>
             <Button size="lg" variant="outline" onClick={() => onNavigate("pricing")} icon="receipt_long">
@@ -409,7 +418,15 @@ export default function HomePage({ onNavigate, onRequestAudit }) {
             Request your free technical audit report today and start building a personalized IT foundation.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-md w-full sm:w-auto pt-md justify-center">
-            <Button size="lg" variant="white" onClick={onRequestAudit} icon="bolt">
+            <Button
+              size="lg"
+              variant="white"
+              onClick={onRequestAudit}
+              onMouseEnter={prefetchAuditModal}
+              onFocus={prefetchAuditModal}
+              onTouchStart={prefetchAuditModal}
+              icon="bolt"
+            >
               Request Free Audit
             </Button>
             <Button

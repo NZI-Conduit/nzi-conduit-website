@@ -270,6 +270,9 @@ async function prerender() {
 
   const page = await browser.newPage();
   await page.setViewport({ width: 1280, height: 900 });
+  await page.evaluateOnNewDocument(() => {
+    window.__PRERENDER__ = true;
+  });
 
   for (const route of ROUTES) {
     const routeUrl = `http://localhost:${PORT}${route.path}`;
@@ -285,15 +288,12 @@ async function prerender() {
       }
     });
 
-    // Small delay to let animations settle
-    await new Promise((r) => setTimeout(r, 200));
+    // Small delay to let fonts settle
+    await new Promise((r) => setTimeout(r, 100));
 
     // Clean transient artifacts from snapshot DOM
     await page.evaluate(() => {
-      // 1. Remove TopProgressBar if present mid-animation
-      document.querySelectorAll(".fixed.top-0.left-0.right-0.h-1").forEach((el) => el.remove());
-
-      // 2. Remove open modal dialogs (excluding permanent mobile drawer)
+      // 1. Remove open modal dialogs (excluding permanent mobile drawer)
       document.querySelectorAll('div[role="dialog"]:not([aria-label="Mobile Navigation Menu"])').forEach((el) => el.remove());
 
       // 3. Remove transient inline opacity: 0
