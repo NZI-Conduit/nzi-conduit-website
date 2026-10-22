@@ -87,10 +87,22 @@ export const SEO_ROUTES = {
     ogImage: "https://nziconduit.com/logo.png",
     breadcrumbName: "404 Not Found",
   },
+  "email-preview": {
+    path: "/email-preview",
+    title: "Email Preview (Dev Only) | NZI Conduit",
+    description: "Developer preview tool for NZI Conduit Technical Audit Request email templates.",
+    canonical: "https://nziconduit.com/email-preview",
+    ogTitle: "Email Preview | NZI Conduit",
+    ogDescription: "Internal inspection preview for technical audit emails.",
+    ogUrl: "https://nziconduit.com/email-preview",
+    ogImage: "https://nziconduit.com/logo.png",
+    breadcrumbName: "Email Preview",
+    robots: "noindex, nofollow",
+  },
 };
 
 export function getBreadcrumbJsonLd(routeKey) {
-  if (!routeKey || routeKey === "home" || routeKey === "404") return null;
+  if (!routeKey || routeKey === "home" || routeKey === "404" || routeKey === "email-preview") return null;
   const meta = SEO_ROUTES[routeKey];
   if (!meta) return null;
 
@@ -129,6 +141,15 @@ export function applySeoToDom(routeKey) {
     }
     el.setAttribute("content", content);
   };
+
+  if (meta.robots) {
+    updateMeta("robots", meta.robots);
+  } else {
+    const robotsEl = document.querySelector('meta[name="robots"]');
+    if (robotsEl) {
+      robotsEl.remove();
+    }
+  }
 
   updateMeta("description", meta.description);
   updateMeta("og:title", meta.ogTitle, "property");

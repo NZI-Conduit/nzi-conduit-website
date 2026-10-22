@@ -5,6 +5,7 @@ export const ROUTE_IMPORTS = {
   seo: () => import("../pages/SeoPage"),
   webdev: () => import("../pages/WebDevPage"),
   about: () => import("../pages/AboutPage"),
+  "email-preview": () => import("../pages/EmailPreviewPage"),
   404: () => import("../pages/NotFoundPage"),
 };
 

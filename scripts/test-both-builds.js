@@ -65,15 +65,29 @@ async function testProductionBuild() {
       return { mailto, tel, text };
     });
 
-    console.log(`✓ Mailto link rendered: ${content.mailto} (expected mailto:start@nziconduit.com)`);
+    console.log(`✓ Mailto link rendered: ${content.mailto} (expected mailto:kalsi@nziconduit.com)`);
     console.log(`✓ Tel link rendered: ${content.tel} (expected tel:+16236960138)`);
     console.log(`✓ Fallback text includes 'Direct Consultation': ${content.text.includes("Direct Consultation")}`);
 
-    if (content.mailto !== "mailto:start@nziconduit.com") throw new Error("Mailto mismatch");
+    if (content.mailto !== "mailto:kalsi@nziconduit.com") throw new Error("Mailto mismatch");
     if (content.tel !== "tel:+16236960138") throw new Error("Tel mismatch");
 
+    // Test /email-preview password gate in production
+    await page.goto("http://localhost:4175/email-preview", { waitUntil: "networkidle0" });
+    const isLocked = await page.evaluate(() => document.body.textContent.includes("Developer Email Preview") && document.querySelector('input[type="password"]') !== null);
+    console.log(`✓ EmailPreview locked behind password gate in prod: ${isLocked} (expected: true)`);
+    if (!isLocked) throw new Error("Expected EmailPreview to be locked in production");
+
+    // Unlock with password
+    await page.type('input[type="password"]', "nzi2026");
+    await page.click('button[type="submit"]');
+    await new Promise((r) => setTimeout(r, 400));
+    const isUnlocked = await page.evaluate(() => document.querySelector('iframe[title="Email Preview Frame"]') !== null);
+    console.log(`✓ EmailPreview unlocked with dev password in prod: ${isUnlocked} (expected: true)`);
+    if (!isUnlocked) throw new Error("Expected EmailPreview to unlock with password");
+
     await browser.close();
-    console.log("✅ Production build fallback test PASSED");
+    console.log("✅ Production build fallback and email preview gate tests PASSED");
   } finally {
     server.kill();
   }

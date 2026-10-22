@@ -15,6 +15,7 @@ const LazyCybersecurityPage = lazy(() => import("../pages/CybersecurityPage"));
 const LazySeoPage = lazy(() => import("../pages/SeoPage"));
 const LazyWebDevPage = lazy(() => import("../pages/WebDevPage"));
 const LazyAboutPage = lazy(() => import("../pages/AboutPage"));
+const LazyEmailPreviewPage = lazy(() => import("../pages/EmailPreviewPage"));
 const LazyNotFoundPage = lazy(() => import("../pages/NotFoundPage"));
 
 // Premium Top Progress Bar (Vercel / GitHub style)
@@ -73,7 +74,7 @@ function getInitialPage() {
     const params = new URLSearchParams(window.location.search);
     const pageParam = params.get("page");
     const resolvedPage = pathname || pageParam || "home";
-    const validPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about"];
+    const validPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about", "email-preview"];
     if (validPages.includes(resolvedPage)) return resolvedPage;
     if (pathname) return "404";
   }
@@ -101,7 +102,7 @@ export default function App() {
       const packageParam = params.get("package");
 
       const resolvedPage = pathname || pageParam || "home";
-      const validPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about"];
+      const validPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about", "email-preview"];
 
       if (validPages.includes(resolvedPage)) {
         if (resolvedPage === "home" || loadedComponents[resolvedPage]) {
@@ -189,7 +190,7 @@ export default function App() {
     setSelectedPackageId(null);
   };
 
-  const knownPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about"];
+  const knownPages = ["home", "services", "pricing", "cybersecurity", "seo", "webdev", "about", "email-preview"];
   const is404 = !knownPages.includes(activePage);
 
   // Synchronous component resolution: If already preloaded into memory, renders synchronously without Suspense!
@@ -199,6 +200,7 @@ export default function App() {
   const SeoComp = loadedComponents.seo || LazySeoPage;
   const WebDevComp = loadedComponents.webdev || LazyWebDevPage;
   const AboutComp = loadedComponents.about || LazyAboutPage;
+  const EmailPreviewComp = loadedComponents["email-preview"] || LazyEmailPreviewPage;
   const NotFoundComp = loadedComponents["404"] || LazyNotFoundPage;
 
   return (
@@ -306,6 +308,14 @@ export default function App() {
                   onNavigate={handleNavigate}
                   onRequestAudit={() => handleOpenAuditModal(null)}
                 />
+              </Suspense>
+            ))}
+          {activePage === "email-preview" &&
+            (loadedComponents["email-preview"] ? (
+              <EmailPreviewComp onNavigate={handleNavigate} />
+            ) : (
+              <Suspense fallback={<PageLoader />}>
+                <LazyEmailPreviewPage onNavigate={handleNavigate} />
               </Suspense>
             ))}
           {is404 &&

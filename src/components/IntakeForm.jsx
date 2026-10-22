@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SERVICE_PACKAGES } from "../data/servicePackages";
 import { COMPANY_DETAILS } from "../lib/constants";
+import { createAuditEmail } from "../lib/auditEmailTemplate";
 
 /**
  * NZI Conduit intake form (spec rev 1). Drop-down disclosure -> shared contact
@@ -115,6 +116,7 @@ export default function IntakeForm({ defaultOpen = false, presetService }) {
   const [errors, setErrors] = useState({});
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const [token, setToken] = useState("");
+  const [inquiryMailto, setInquiryMailto] = useState("");
   const formRef = useRef(null);
   const tsRef = useRef(null);
   const widgetId = useRef(null);
@@ -184,6 +186,26 @@ export default function IntakeForm({ defaultOpen = false, presetService }) {
       const shown = BRANCHES[s].q.slice(0, multiService ? 2 : undefined);
       p[s] = Object.fromEntries(shown.map((q) => [q.key, d[s][q.key] ?? (q.multi ? [] : "")]));
     }
+
+    const emailBundle = createAuditEmail({
+      name: p.name,
+      email: p.email,
+      business_name: p.business_name,
+      current_url: p.current_url,
+      location: p.location,
+      services: p.services,
+      budget_fit: p.budget_fit,
+      timeline: p.timeline,
+      notes: p.notes,
+      submitted_at: p.submitted_at,
+    });
+
+    p.email_subject = emailBundle.subject;
+    p.email_html = emailBundle.html;
+    p.email_text = emailBundle.text;
+    p.email_reply_to = emailBundle.replyTo;
+    p.email_to = emailBundle.to;
+
     return p;
   };
 
@@ -209,8 +231,23 @@ export default function IntakeForm({ defaultOpen = false, presetService }) {
     const url = import.meta.env.VITE_INTAKE_WEBHOOK_URL;
     const payload = buildPayload();
     if (!url) {
-      if (import.meta.env.DEV) { console.info("[intake] no webhook URL set; payload:", payload); setStatus("success"); return; }
-      setStatus("error"); return;
+      const recipient = payload.email_to || COMPANY_DETAILS.email || "admin@nziconduit.com";
+      const subject = encodeURIComponent(payload.email_subject);
+      const mailto = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(payload.email_text)}`;
+      setInquiryMailto(mailto);
+
+      if (import.meta.env.DEV) {
+        console.info("[intake] no webhook URL set; payload:", payload, `(routing test inquiry to ${recipient})`);
+        if (typeof window !== "undefined") {
+          try {
+            window.location.href = mailto;
+          } catch {}
+        }
+        setStatus("success");
+        return;
+      }
+      setStatus("error");
+      return;
     }
     setStatus("submitting");
     const ctl = new AbortController();
@@ -245,9 +282,19 @@ export default function IntakeForm({ defaultOpen = false, presetService }) {
       {open && (
         <div id="intake-panel" className="border-t border-slate-200 px-6 py-6">
           {status === "success" ? (
-            <div role="status" className="space-y-2 py-6 text-center">
+            <div role="status" className="space-y-3 py-6 text-center">
               <h3 className="text-xl font-semibold text-slate-900">Request received</h3>
               <p className="text-slate-700">Thanks, {d.name.split(" ")[0] || "there"}. We’ll email you at {d.email} shortly.</p>
+              {inquiryMailto && (
+                <div className="pt-2 text-xs text-slate-500 space-y-1">
+                  <p>Inquiry prepared for <strong className="text-slate-700">{COMPANY_DETAILS.email || "kalsi@nziconduit.com"}</strong>.</p>
+                  <p>
+                    <a href={inquiryMailto} className="text-blue-600 underline font-medium hover:text-blue-700">
+                      Click here to send email directly
+                    </a> if your email client didn't open automatically.
+                  </p>
+                </div>
+              )}
             </div>
           ) : (
             <form ref={formRef} onSubmit={submit} noValidate className="space-y-6">
