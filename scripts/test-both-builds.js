@@ -51,26 +51,10 @@ async function testProductionBuild() {
 
     await page.waitForSelector('div[role="dialog"]:not([aria-label*="Mobile Navigation"])', { visible: true });
 
-    // Verify form is NOT rendered
+    // Verify the intake form is rendered even before the webhook is configured.
     const hasForm = await page.evaluate(() => document.querySelector("#intake-panel") !== null || document.querySelector("#name") !== null);
-    console.log(`✓ IntakeForm rendered in prod without webhook: ${hasForm} (expected: false)`);
-    if (hasForm) throw new Error("IntakeForm should NOT render in prod without webhook");
-
-    // Verify fallback message, mailto link, and phone number
-    const content = await page.evaluate(() => {
-      const modal = document.querySelector('div[role="dialog"]:not([aria-label*="Mobile Navigation"])');
-      const mailto = modal.querySelector('a[href^="mailto:"]')?.getAttribute("href");
-      const tel = modal.querySelector('a[href^="tel:"]')?.getAttribute("href");
-      const text = modal.textContent;
-      return { mailto, tel, text };
-    });
-
-    console.log(`✓ Mailto link rendered: ${content.mailto} (expected mailto:kalsi@nziconduit.com)`);
-    console.log(`✓ Tel link rendered: ${content.tel} (expected tel:+16236960138)`);
-    console.log(`✓ Fallback text includes 'Direct Consultation': ${content.text.includes("Direct Consultation")}`);
-
-    if (content.mailto !== "mailto:kalsi@nziconduit.com") throw new Error("Mailto mismatch");
-    if (content.tel !== "tel:+16236960138") throw new Error("Tel mismatch");
+    console.log(`✓ IntakeForm rendered in prod without webhook: ${hasForm} (expected: true)`);
+    if (!hasForm) throw new Error("IntakeForm should render in prod without webhook");
 
     // Test /email-preview password gate in production
     await page.goto("http://localhost:4175/email-preview", { waitUntil: "networkidle0" });
@@ -87,7 +71,7 @@ async function testProductionBuild() {
     if (!isUnlocked) throw new Error("Expected EmailPreview to unlock with password");
 
     await browser.close();
-    console.log("✅ Production build fallback and email preview gate tests PASSED");
+    console.log("✅ Production intake form and email preview gate tests PASSED");
   } finally {
     server.kill();
   }
