@@ -2,9 +2,13 @@ let prefetchPromise = null;
 
 export function prefetchAuditModal() {
   if (!prefetchPromise && typeof window !== "undefined") {
-    prefetchPromise = import("../components/ui/RequestAuditModal");
+    prefetchPromise = Promise.all([
+      import("../components/ui/RequestAuditModal"),
+      import("../components/IntakeForm"),
+    ]);
   }
   return prefetchPromise;
 }
+
 
 
