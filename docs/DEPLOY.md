@@ -159,7 +159,7 @@ When `npm run perf` fails, it exits with code `1` and prints the exact offending
 1. **Home-Page JS Brotli Failure (> 100 KB):**
    - Run `npx vite-bundle-visualizer` to identify which dependency or module was newly added to the entry chunk.
    - Ensure dynamic dialogs/modals (e.g. `RequestAuditModal`) use `React.lazy()` with on-demand prefetching rather than static imports.
-   - Verify utility libraries are properly tree-shaken (e.g. `clsx` instead of `tailwind-merge`).
+   - Verify utility libraries are properly tree-shaken and avoid adding class-merging dependencies unless they are required.
 
 2. **LCP Failure (> 2,500 ms):**
    - Check if an above-the-fold element was wrapped in an entrance animation with `opacity: 0` or delayed mount.
@@ -224,5 +224,3 @@ Because submissions are dispatched via `fetch()` directly from the browser at `h
 - **Development Mode (`import.meta.env.DEV`):** If `VITE_INTAKE_WEBHOOK_URL` is empty or not set, the form simulates a successful submission, logs the constructed payload to the browser console (`console.info("[intake] no webhook URL set; payload:", payload)`), and renders the success confirmation screen.
 - **Production Mode (`import.meta.env.PROD`):** If `VITE_INTAKE_WEBHOOK_URL` is empty, the form immediately halts submission, fails safely, and renders the user-facing error message:
   > *"We couldn’t send your request. Please try again, or email start@nziconduit.com."*
-
-

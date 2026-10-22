@@ -15,6 +15,14 @@ jspm_packages/
 dist/
 dist-ssr/
 *.local
+*.tsbuildinfo
+
+# Local test and QA artifacts
+scratch/
+scratch_*.json
+coverage/
+playwright-report/
+test-results/
 
 # Environment files
 .env
@@ -29,6 +37,7 @@ dist-ssr/
 # Local AI tool context
 .impeccable/
 .antigravity/
+.opencode/
 
 # IDEs and editors
 .idea/
