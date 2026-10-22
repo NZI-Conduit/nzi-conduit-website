@@ -181,3 +181,48 @@ When `npm run perf` fails, it exits with code `1` and prints the exact offending
    GUARDRAIL_SINGLE_ROUTE=1 GUARDRAIL_RUNS=1 node scripts/perf-guardrail.js
    ```
 
+---
+
+## 4. Intake Form Setup
+
+The intake form ([src/components/IntakeForm.jsx](file:///Users/pratyakshkalsi/Desktop/NZIConduit/nzi-conduit-website/src/components/IntakeForm.jsx)) is lazily loaded on demand inside the audit modal and posts verified submissions directly to an n8n webhook.
+
+### Required Environment Variables
+
+Configure these variables in your deployment environment (e.g., DreamHost environment or `.env.production`):
+
+| Variable | Description | Exposure |
+| :--- | :--- | :--- |
+| `VITE_INTAKE_WEBHOOK_URL` | Public Cloudflare Tunnel URL of the n8n webhook endpoint (e.g. `https://n8n.yourdomain.com/webhook/intake`) | Public client-side bundle |
+| `VITE_TURNSTILE_SITE_KEY` | Cloudflare Turnstile public site key for bot verification | Public client-side bundle |
+
+> [!IMPORTANT]
+> Never put webhook secrets or private keys in these environment variables. Everything prefixed with `VITE_` is bundled into the client-side JavaScript. All client validation is UX-only; the backend n8n workflow must independently validate all fields and verify the Turnstile token with Cloudflare's siteverify API.
+
+### Where to Get the Cloudflare Turnstile Site Key
+1. Log in to the [Cloudflare Dashboard](https://dash.cloudflare.com/).
+2. Select **Turnstile** from the navigation sidebar.
+3. Click **Add widget**:
+   - **Widget name:** `NZI Conduit Intake`
+   - **Domains:** Add `nziconduit.com` (and `localhost` for local testing).
+   - **Widget Mode:** Managed (or Non-interactive) on the free tier.
+4. Copy the generated **Site Key** and assign it to `VITE_TURNSTILE_SITE_KEY`.
+5. The **Secret Key** goes strictly into your private n8n workflow credentials, never in this frontend repository.
+
+### n8n Webhook CORS Requirements
+Because submissions are dispatched via `fetch()` directly from the browser at `https://nziconduit.com` to the webhook URL:
+1. In the n8n Webhook node settings:
+   - **HTTP Method:** `POST`
+   - **Response Mode:** `When Last Node Finishes` (or `Immediately`)
+   - **Allowed Origins (CORS):** Set strictly to `https://nziconduit.com` (or include `http://localhost:5173` during local staging).
+2. The endpoint must return the following CORS headers on `OPTIONS` preflight and `POST` responses:
+   - `Access-Control-Allow-Origin: https://nziconduit.com`
+   - `Access-Control-Allow-Methods: POST, OPTIONS`
+   - `Access-Control-Allow-Headers: Content-Type`
+
+### Missing Webhook Behavior (Production vs Development)
+- **Development Mode (`import.meta.env.DEV`):** If `VITE_INTAKE_WEBHOOK_URL` is empty or not set, the form simulates a successful submission, logs the constructed payload to the browser console (`console.info("[intake] no webhook URL set; payload:", payload)`), and renders the success confirmation screen.
+- **Production Mode (`import.meta.env.PROD`):** If `VITE_INTAKE_WEBHOOK_URL` is empty, the form immediately halts submission, fails safely, and renders the user-facing error message:
+  > *"We couldn’t send your request. Please try again, or email start@nziconduit.com."*
+
+

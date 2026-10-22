@@ -16,6 +16,11 @@ dist/
 dist-ssr/
 *.local
 
+# Environment files
+.env
+.env.*
+!.env.example
+
 # macOS system files
 .DS_Store
 .AppleDouble

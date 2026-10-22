@@ -23,6 +23,8 @@ const MIME_TYPES = {
   ".xml": "application/xml; charset=utf-8",
 };
 
+const cache = new Map();
+
 const server = http.createServer((req, res) => {
   const urlPath = req.url.split("?")[0];
   let filePath = path.join(distDir, urlPath);
@@ -63,7 +65,12 @@ const server = http.createServer((req, res) => {
   const isCompressible = /text|javascript|css|json|xml|svg/.test(contentType);
 
   if (isCompressible && acceptEncoding.includes("br")) {
-    const compressed = zlib.brotliCompressSync(fileContent);
+    const cacheKey = `br:${filePath}`;
+    let compressed = cache.get(cacheKey);
+    if (!compressed) {
+      compressed = zlib.brotliCompressSync(fileContent);
+      cache.set(cacheKey, compressed);
+    }
     res.writeHead(statusCode, {
       "Content-Type": contentType,
       "Content-Encoding": "br",
@@ -71,7 +78,12 @@ const server = http.createServer((req, res) => {
     });
     res.end(compressed);
   } else if (isCompressible && acceptEncoding.includes("gzip")) {
-    const compressed = zlib.gzipSync(fileContent);
+    const cacheKey = `gz:${filePath}`;
+    let compressed = cache.get(cacheKey);
+    if (!compressed) {
+      compressed = zlib.gzipSync(fileContent);
+      cache.set(cacheKey, compressed);
+    }
     res.writeHead(statusCode, {
       "Content-Type": contentType,
       "Content-Encoding": "gzip",
